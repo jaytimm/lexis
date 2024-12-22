@@ -19,13 +19,13 @@
   # Available datasets
   datasets <- c(
     "lexical_decision",
-    "concreteness_ratings",
-    "aoa_ratings",
+    "concreteness",
+    "age_of_acquisition",
     "morpholex",
-    "free_association_norms",
-    "cmu_pronunciation_dictionary",
+    "free_association",
+    "cmu_pronunciation",
     "wordset_dictionary",
-    "glove_embeddings"
+    "glove50d"
   )
 
   # Validate dataset name
@@ -55,10 +55,8 @@
   readRDS(local_file)
 }
 
+# Individual dataset functions
 #' Load Lexical Decision Dataset
-#'
-#' This function downloads and loads the Lexical Decision dataset.
-#'
 #' @param ... Additional arguments passed to the internal `.load_data` function.
 #' @return A data frame containing the Lexical Decision dataset.
 #' @export
@@ -66,32 +64,23 @@ lexical_decision <- function(...) {
   .load_data("lexical_decision", ...)
 }
 
-#' Load Concreteness Ratings Dataset
-#'
-#' This function downloads and loads the Concreteness Ratings dataset.
-#'
+#' Load Concreteness Dataset
 #' @param ... Additional arguments passed to the internal `.load_data` function.
-#' @return A data frame containing the Concreteness Ratings dataset.
+#' @return A data frame containing the Concreteness dataset.
 #' @export
-concreteness_ratings <- function(...) {
-  .load_data("concreteness_ratings", ...)
+concreteness <- function(...) {
+  .load_data("concreteness", ...)
 }
 
-#' Load Age of Acquisition Ratings Dataset
-#'
-#' This function downloads and loads the Age of Acquisition Ratings dataset.
-#'
+#' Load Age of Acquisition Dataset
 #' @param ... Additional arguments passed to the internal `.load_data` function.
-#' @return A data frame containing the Age of Acquisition Ratings dataset.
+#' @return A data frame containing the Age of Acquisition dataset.
 #' @export
-aoa_ratings <- function(...) {
-  .load_data("aoa_ratings", ...)
+age_of_acquisition <- function(...) {
+  .load_data("age_of_acquisition", ...)
 }
 
 #' Load MorphoLex Dataset
-#'
-#' This function downloads and loads the MorphoLex dataset.
-#'
 #' @param ... Additional arguments passed to the internal `.load_data` function.
 #' @return A data frame containing the MorphoLex dataset.
 #' @export
@@ -99,32 +88,23 @@ morpholex <- function(...) {
   .load_data("morpholex", ...)
 }
 
-#' Load Free Association Norms Dataset
-#'
-#' This function downloads and loads the Free Association Norms dataset.
-#'
+#' Load Free Association Dataset
 #' @param ... Additional arguments passed to the internal `.load_data` function.
-#' @return A data frame containing the Free Association Norms dataset.
+#' @return A data frame containing the Free Association dataset.
 #' @export
-free_association_norms <- function(...) {
-  .load_data("free_association_norms", ...)
+free_association <- function(...) {
+  .load_data("free_association", ...)
 }
 
-#' Load CMU Pronunciation Dictionary Dataset
-#'
-#' This function downloads and loads the CMU Pronunciation Dictionary dataset.
-#'
+#' Load CMU Pronunciation Dataset
 #' @param ... Additional arguments passed to the internal `.load_data` function.
-#' @return A data frame containing the CMU Pronunciation Dictionary dataset.
+#' @return A data frame containing the CMU Pronunciation dataset.
 #' @export
-cmu_pronunciation_dictionary <- function(...) {
-  .load_data("cmu_pronunciation_dictionary", ...)
+cmu_pronunciation <- function(...) {
+  .load_data("cmu_pronunciation", ...)
 }
 
 #' Load Wordset Dictionary Dataset
-#'
-#' This function downloads and loads the Wordset Dictionary dataset.
-#'
 #' @param ... Additional arguments passed to the internal `.load_data` function.
 #' @return A data frame containing the Wordset Dictionary dataset.
 #' @export
@@ -133,12 +113,9 @@ wordset_dictionary <- function(...) {
 }
 
 #' Load GloVe Embeddings Dataset
-#'
-#' This function downloads and loads the GloVe Embeddings dataset.
-#'
 #' @param ... Additional arguments passed to the internal `.load_data` function.
 #' @return A data frame containing the GloVe Embeddings dataset.
 #' @export
-glove_embeddings <- function(...) {
-  .load_data("glove_embeddings", ...)
+glove50d <- function(...) {
+  .load_data("glove50d", ...)
 }

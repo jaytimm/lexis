@@ -140,7 +140,7 @@ wordsense_dict <- big_df |> data.table::rbindlist() |>
 
 
 ```{r}
-wordsense <- readRDS(paste0(ld, 'wordset-dictionary/', 'wordsense_dictionary.rds'))  |>
+wordsense <- readRDS(paste0(ld, 'wordset-dictionary/', 'wordset_dictionary.rds'))  |>
   data.table::setDT()
 ```
 
