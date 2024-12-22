@@ -1,0 +1,273 @@
+---
+title: "Untitled"
+output: html_document
+date: '2022-08-03'
+---
+
+
+# Build `lexis` files
+
+```{r}
+library(dplyr)
+ld <- '/home/jtimm/pCloudDrive/GitHub/packages/lexis/data-raw/'
+```
+
+
+
+## Behavioral data sets
+
+```{r echo=FALSE}
+Data <- c("Lexical decision and naming",
+          "Concreteness ratings",
+          "AoA ratings",
+          "MorphoLex",
+          "Free Association Norms",
+          "CMU Pronunciation Dictionary",
+          "Wordset Dictionary",
+          "GloVe Embeddings"
+          )
+
+
+Source <- c( "Balota, D. A., Yap, M. J., Hutchison, K. A., Cortese, M. J., Kessler, B., Loftis, B., ... & Treiman, R. (2007). The English lexicon project. *Behavior research methods*, 39(3), 445-459.",
+             "Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40 thousand generally known English word lemmas. *Behavior research methods*, 46(3), 904-911.",
+             "Kuperman, V., Stadthagen-Gonzalez, H., & Brysbaert, M. (2012). Age-of-acquisition ratings for 30,000 English words. *Behavior Research Methods*, 44(4), 978-990.",
+             "Sánchez-Gutiérrez, C.H., Mailhot, H., Deacon, S.H. et al. MorphoLex: A derivational morphological database for 70,000 English words. Behav Res 50, 1568–1580 (2018). https://doi.org/10.3758/s13428-017-0981-8",
+             
+             "Nelson DL, McEvoy CL, Schreiber TA. The University of South Florida free association, rhyme, and word fragment norms. Behav Res Methods Instrum Comput. 2004 Aug;36(3):402-7. doi: 10.3758/bf03195588. PMID: 15641430.",
+             
+             "http://www.speech.cs.cmu.edu/cgi-bin/cmudict",
+             "https://github.com/wordset/wordset-dictionary",
+             "Pennington, J., Socher, R., & Manning, C. D. (2014, October). Glove: Global vectors for word representation. In Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP) (pp. 1532-1543)."
+             
+             
+             )
+
+knitr::kable(data.frame(Data=Data, Source=Source))
+```
+
+
+
+### Concreteness ratings
+
+```{r}
+concreteness <- read.csv(paste0(ld, 'concreteness/','Brysbaert_et_al_2014.csv')) |>
+  select(Word,Conc.M,Conc.SD,SUBTLEX) |>
+  rename(concRating=Conc.M,concSD=Conc.SD,freqSUBTLEX=SUBTLEX) |>
+  data.table::setDT()
+
+saveRDS(concreteness, paste0(ld, 'concreteness/concreteness.rds'))
+```
+
+
+
+### Age of acquisition ratings
+
+```{r}
+aoa <- read.csv(paste0(ld, 'aoa/', 'Kuperman_et_al_2012.csv')) |>
+  select(Word, Rating.Mean, Rating.SD) |>
+  rename(aoaRating=Rating.Mean,aoaSD=Rating.SD) |>
+  data.table::setDT()
+
+saveRDS(aoa, paste0(ld, 'aoa/age_of_acquisition.rds'))
+```
+
+
+
+### Response times in lexical decision & naming
+
+```{r}
+lexdec <- read.csv(paste0(ld, 'lexdec/', 'Balota_et_al_2007.csv')) |>
+  select(Word, 
+         #Pron, NMorph, POS, 
+         I_Mean_RT, I_SD, 
+         I_NMG_Mean_RT, I_NMG_SD) |>
+  rename(lexdecRT = I_Mean_RT, 
+         lexdecSD = I_SD,
+         nmgRT = I_NMG_Mean_RT, 
+         nmgSD = I_NMG_SD) |>
+  data.table::setDT()
+
+saveRDS(lexdec, paste0(ld, 'lexdec/lexical_decision.rds'))
+```
+
+
+
+## Wordset dictionary 
+
+https://github.com/wordset/wordset-dictionary
+
+
+```{r eval=FALSE}
+p0 <- paste0(ld, 'wordset-dictionary/jsons/')
+p1 <- list.files(path = p0, full.names = T)
+dd <- lapply(p1, jsonlite::read_json)
+
+big_df <- list()
+for(j in 1:length(dd)){
+  
+  eg <- dd[[j]]
+  dfs <-lapply(names(eg), function(x) eg[[x]]$meanings)
+  names(dfs) <- names(eg) 
+  
+  dfs0 <- list()
+  
+  for(i in 1:length(dfs)){
+    
+    x0 <- dfs[i] 
+    
+    if(is.null(x0[[1]])) next
+    x0 <- purrr::map_depth(x0, 4, ~ifelse(is.null(.x), NA, .x) )
+  
+    xx <- x0 |> reshape2::melt() |> data.table::setDT()
+    xx1 <- xx[, list(text = paste(value, collapse = ", ")), by = list(L1, L2, L3)]
+    xx2 <- xx1 |> data.table::dcast(L1+ L2 ~ L3, value.var = 'text')
+    
+    if(!'example' %in% colnames(xx2)) xx2$example <- NA
+    if(!'synonyms' %in% colnames(xx2)) xx2$synonyms <- NA
+    dfs0[[i]] <- xx2[, c('L1', 'L2', 'speech_part', 'def', 'example', 'synonyms')]
+    
+    }
+  big_df[[j]] <- dfs0 |> data.table::rbindlist()
+}
+
+wordsense_dict <- big_df |> data.table::rbindlist() |> 
+  mutate(L1 = trimws(L1)) |>
+  rename(lemma = L1, sense = L2, pos = speech_part, 
+         definition = def) |>
+  arrange(lemma)
+```
+
+
+
+```{r}
+wordsense <- readRDS(paste0(ld, 'wordset-dictionary/', 'wordsense_dictionary.rds'))  |>
+  data.table::setDT()
+```
+
+
+
+
+
+## Morphologically complex forms
+
+https://github.com/hugomailhot/MorphoLex-en
+
+https://link.springer.com/article/10.3758/s13428-017-0981-8
+
+
+```{r}
+# library(tidyverse)
+ld <- '/home/jtimm/pCloudDrive/GitHub/packages/lexis/data-raw/'
+path <- paste0(ld, 'MorphoLex/','MorphoLEX_en.xlsx')
+
+l0 <- path %>% 
+  readxl::excel_sheets() %>% 
+  rlang::set_names() %>% 
+  purrr::map(readxl::read_excel, path = path)
+
+l1 <- l0[2:31]
+l2 <- lapply(l1, "[", 1:6) |> data.table::rbindlist()
+
+morpholex <- l2 |> 
+  mutate(length = nchar(Word), 
+         Word = tolower(Word)) |>
+  
+  group_by(MorphoLexSegm) |>
+  mutate(lemma = Word[which.min(length)]) |> ungroup() |>
+  mutate(base1 = stringr::str_extract(MorphoLexSegm, "\\{[^{}]+\\}")) |>
+  group_by(base1) |>
+  mutate(base = lemma[which.min(length)]) |> ungroup() |>
+  
+  select(Word, POS, 
+         lemma, base, 
+         PRS_signature, MorphoLexSegm) |>
+  
+  data.table::setDT() 
+
+
+## strip affixes --
+m0 <- morpholex |>
+  mutate(affs = gsub('[\\(\\{].*[\\)\\}]', '', MorphoLexSegm)) |>
+  mutate(affs = gsub('<<', '< <', affs),
+         affs = gsub('>>', '> >', affs),
+         affs = gsub('<>', '< >', affs)) |>
+  
+  mutate(affs = gsub('(<)([a-z]*)(<)', '\\2-', affs),
+         affs = gsub('(>)([a-z]*)(>)', '-\\2', affs)) 
+
+
+morpholex$affix <- m0$affs #|>  strsplit(' ')
+morpholex$Naffix <- ifelse(nchar(morpholex$affix) == 0, 0, 
+                           stringr::str_count(morpholex$affix, " ") + 1)
+
+saveRDS(morpholex, paste0(ld, 'MorphoLex/morpholex.rds'))
+```
+
+
+
+
+## GloVe Pretrained embeddings
+
+https://nlp.stanford.edu/projects/glove/
+
+```{r}
+glove.6B.50d <- data.table::fread(
+  paste0(ld, 'glove-embeddings/','glove.6B.50d.txt'))
+
+glove50d <- as.matrix(glove.6B.50d[, 2:51])
+rownames(glove50d) <- glove.6B.50d$V1
+saveRDS(glove50d, paste0(ld, 'glove-embeddings/glove50d.rds'))
+```
+
+
+
+
+## CMU
+
+```{r}
+# Read the file and preprocess it
+raw_lines <- readLines("~/pCloudDrive/GitHub/packages/lexis/data-raw/cmu-pronunciation/cmudict-0.7b", encoding = "UTF-8", warn = FALSE)
+
+# Remove the first 56 comment rows
+data_lines <- raw_lines[-(1:56)]
+
+# Handle invalid multibyte characters
+data_lines <- iconv(data_lines, from = "UTF-8", to = "UTF-8", sub = "")
+
+# Split each line into 'Word' and 'Pronunciation' on the first space, ensuring no leading spaces
+cmu <- data.frame(
+  Word = sub(" .*", "", data_lines),  # Extract the first part (word)
+  Pronunciation = trimws(sub("^[^ ]+ ", "", data_lines)),  # Remove the first word and any leading space
+  stringsAsFactors = FALSE
+)
+
+saveRDS(cmu, paste0(ld, 'cmu-pronunciation/cmu_pronunciation.rds'))
+```
+
+
+## Freeword Association
+
+```{r}
+fw <- readr::read_csv("~/pCloudDrive/GitHub/packages/lexis/data-raw/free-association/free_association.txt", 
+                      locale = readr::locale(encoding = "UTF-8"))
+
+
+fw0 <- fw |> select(1:2, 4:5) |> janitor::clean_names() |>
+  mutate(cue = tolower(cue),
+         target = tolower(target))
+
+saveRDS(fw0, paste0(ld, 'free-association/free_association.rds'))
+```
+
+
+
+```{r}
+fs <- list.files("~/pCloudDrive/GitHub/packages/lexis/data-raw", recursive = T)
+fs0 <- subset(fs, grepl('\\.rds', fs))
+fs0
+```
+
+
+
+
+
