@@ -18,7 +18,7 @@
 #   in the wide format only.
 #   First column of the CSV is an unnamed integer row index — dropped.
 #
-# Imageability (Cortese & Fugett):
+# Imageability (Bird, Franklin & Howard):
 #   Uses 'new Imageability' column. '.' means no rating (mostly function words) → NA.
 #   Scale is 100–700 (MRC Psycholinguistic Database convention). No SD or N per item.
 #   'Word type' (POS tag: F=function, N=noun, V=verb, A=adjective) kept in wide format.
@@ -60,12 +60,41 @@ library(readr)
 library(readxl)
 library(purrr)
 
-# Set base_dir to the directory containing this script, or override manually:
-base_dir <- dirname(normalizePath(sys.frame(1)$ofile, mustWork = FALSE))
-# Fallback if run interactively:
-if (!nzchar(base_dir) || base_dir == ".") {
-  base_dir <- "/home/jtimm/Dropbox/working-papers/psycho-data"
+find_base_dir <- function() {
+  env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
+  if (nzchar(env_dir)) return(normalizePath(env_dir, mustWork = TRUE))
+
+  this_file <- tryCatch(
+    normalizePath(sys.frame(1)$ofile, mustWork = FALSE),
+    error = function(e) ""
+  )
+  file_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+  if (!nzchar(this_file) && length(file_arg)) {
+    this_file <- sub("^--file=", "", file_arg[[1]])
+  }
+  candidates <- unique(c(getwd(), dirname(this_file), dirname(dirname(this_file))))
+  candidates <- candidates[nzchar(candidates)]
+
+  for (start in candidates) {
+    current <- normalizePath(start, mustWork = FALSE)
+    repeat {
+      desc <- file.path(current, "DESCRIPTION")
+      if (file.exists(desc) && any(grepl("^Package:\\s+lexis\\s*$", readLines(desc, warn = FALSE)))) {
+        return(current)
+      }
+      parent <- dirname(current)
+      if (identical(parent, current)) break
+      current <- parent
+    }
+  }
+
+  stop(
+    "Could not locate the lexis package root. Set LEXIS_BASE_DIR to the repo path.",
+    call. = FALSE
+  )
 }
+
+base_dir <- find_base_dir()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SECTION 1: READ & HARMONIZE EACH DATASET
@@ -149,8 +178,9 @@ humor <- humor_raw |>
          scale_min = 1, scale_max = 5) |>
   select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
 
-## 1f. Imageability — Cortese & Fugett (2004) ─────────────────────────────────
-# Scale: 100–700 (MRC Psycholinguistic Database). '.' = no rating → NA.
+## 1f. Imageability — Bird, Franklin & Howard (2001) ──────────────────────────
+# Scale: transformed 100–700 imageability score aligned to the MRC metric.
+# Original ratings were made on a 1–7 scale. '.' = no rating → NA.
 # No SD or N per item available. 'Word type' (POS) kept in wide format only.
 img_raw <- read_csv(
   file.path(base_dir, "imageability/ratings.csv"),
@@ -324,14 +354,14 @@ vis_long <- map_dfr(vis_composite_dims, function(d) {
     )
 })
 
-## 1n. Wordset definition counts (requires build_wordset.R to have been run) ──
+## 1n. Wordset definition counts (requires data-raw/build_wordset.R to have been run) ──
 # n_defs = total definitions across all POS for a word.
 # n_pos  = number of distinct parts of speech attested for a word.
 wordset_index_path <- file.path(
   base_dir, "xother/wordset-dictionary/wordset_index.rds"
 )
 if (!file.exists(wordset_index_path)) {
-  stop("wordset_index.rds not found — run build_wordset.R first.")
+  stop("wordset_index.rds not found — run data-raw/build_wordset.R first.")
 }
 wordset_index_raw <- readRDS(wordset_index_path)
 

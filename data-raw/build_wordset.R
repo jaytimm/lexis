@@ -16,17 +16,78 @@ library(purrr)
 library(jsonlite)
 library(readr)
 
-base_dir <- dirname(normalizePath(sys.frame(1)$ofile, mustWork = FALSE))
-if (!nzchar(base_dir) || base_dir == ".") {
-  base_dir <- "/home/jtimm/Dropbox/working-papers/psycho-data"
+find_base_dir <- function() {
+  env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
+  if (nzchar(env_dir)) return(normalizePath(env_dir, mustWork = TRUE))
+
+  this_file <- tryCatch(
+    normalizePath(sys.frame(1)$ofile, mustWork = FALSE),
+    error = function(e) ""
+  )
+  file_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+  if (!nzchar(this_file) && length(file_arg)) {
+    this_file <- sub("^--file=", "", file_arg[[1]])
+  }
+  candidates <- unique(c(getwd(), dirname(this_file), dirname(dirname(this_file))))
+  candidates <- candidates[nzchar(candidates)]
+
+  for (start in candidates) {
+    current <- normalizePath(start, mustWork = FALSE)
+    repeat {
+      desc <- file.path(current, "DESCRIPTION")
+      if (file.exists(desc) && any(grepl("^Package:\\s+lexis\\s*$", readLines(desc, warn = FALSE)))) {
+        return(current)
+      }
+      parent <- dirname(current)
+      if (identical(parent, current)) break
+      current <- parent
+    }
+  }
+
+  stop(
+    "Could not locate the lexis package root. Set LEXIS_BASE_DIR to the repo path.",
+    call. = FALSE
+  )
 }
+
+base_dir <- find_base_dir()
 
 json_dir <- file.path(base_dir, "xother/wordset-dictionary/jsons")
 json_files <- list.files(json_dir, pattern = "\\.json$", full.names = TRUE)
+if (length(json_files) == 0) {
+  stop("No Wordset JSON files found under: ", json_dir, call. = FALSE)
+}
+
+dict_rds  <- file.path(base_dir, "xother/wordset-dictionary/wordset_dict.rds")
+index_rds <- file.path(base_dir, "xother/wordset-dictionary/wordset_index.rds")
+dict_csv  <- file.path(base_dir, "xother/wordset-dictionary/wordset_dict.csv")
+index_csv <- file.path(base_dir, "xother/wordset-dictionary/wordset_index.csv")
+
+force_rebuild <- identical(tolower(Sys.getenv("LEXIS_FORCE_REBUILD", unset = "false")), "true") ||
+  "--force" %in% commandArgs(trailingOnly = TRUE)
+skip_wordset <- FALSE
+
+outputs_fresh <- function(outputs, inputs) {
+  all(file.exists(outputs)) &&
+    min(file.info(outputs)$mtime) >= max(file.info(inputs)$mtime)
+}
+
+if (!force_rebuild && outputs_fresh(c(dict_rds, index_rds), json_files)) {
+  message("Wordset RDS outputs are current; skipping JSON parse.")
+  message("  ", dict_rds)
+  message("  ", index_rds)
+  if (!file.exists(dict_csv) || !file.exists(index_csv)) {
+    message("Writing missing Wordset CSV companion files from cached RDS outputs...")
+    write_csv(readRDS(dict_rds), dict_csv)
+    write_csv(readRDS(index_rds), index_csv)
+  }
+  skip_wordset <- TRUE
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Parse all JSON files into a single flat tibble (one row per meaning)
 # ─────────────────────────────────────────────────────────────────────────────
+if (!skip_wordset) {
 
 collapse_labels <- function(labels) {
   if (is.null(labels) || length(labels) == 0) return(NA_character_)
@@ -63,7 +124,10 @@ parse_file <- function(path) {
 }
 
 message("Parsing ", length(json_files), " JSON files...")
-wordset_dict <- map_dfr(json_files, parse_file) |>
+wordset_dict <- purrr::imap_dfr(json_files, function(path, i) {
+  message("  [", i, "/", length(json_files), "] ", basename(path))
+  parse_file(path)
+}) |>
   mutate(word = trimws(word))
 
 message("  Rows (meanings): ", nrow(wordset_dict))
@@ -86,10 +150,11 @@ message("  Index rows:      ", nrow(wordset_index))
 # Save
 # ─────────────────────────────────────────────────────────────────────────────
 
-saveRDS(wordset_dict,  file.path(base_dir, "xother/wordset-dictionary/wordset_dict.rds"))
-saveRDS(wordset_index, file.path(base_dir, "xother/wordset-dictionary/wordset_index.rds"))
+saveRDS(wordset_dict,  dict_rds)
+saveRDS(wordset_index, index_rds)
 
-write_csv(wordset_dict,  file.path(base_dir, "xother/wordset-dictionary/wordset_dict.csv"))
-write_csv(wordset_index, file.path(base_dir, "xother/wordset-dictionary/wordset_index.csv"))
+write_csv(wordset_dict,  dict_csv)
+write_csv(wordset_index, index_csv)
 
 message("Done.")
+}

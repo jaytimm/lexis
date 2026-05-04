@@ -1,6 +1,8 @@
 # lexis
 
-A unified compilation of English psycholinguistic norming datasets, built for use as an R data package. Covers affective, semantic, sensorimotor, lexical, phonological, and spatial dimensions for over 200k unique word forms.
+`lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource. It cleans source files, standardizes word identifiers, harmonizes dimension names and scale metadata, aggregates source-specific measures into tidy long and wide tables, and keeps citations and construct notes alongside the data.
+
+Coverage is intentionally sparse: the package contains a large union vocabulary across norming studies, dictionary entries, pronunciation data, and embeddings, but each individual norm is available only for the words rated or listed in its original source. Missing values therefore mean "not available from this source," not that every word has every affective, semantic, sensorimotor, lexical, phonological, or spatial measure.
 
 ---
 
@@ -26,7 +28,7 @@ A unified compilation of English psycholinguistic norming datasets, built for us
 
 [![engelthaler_2018](https://img.shields.io/static/v1?label=&message=engelthaler_2018&color=eeeeee)](#humor) [![affective](https://img.shields.io/static/v1?label=&message=affective&color=ff9f43)](#) [![n=4997](https://img.shields.io/static/v1?label=n&message=4%2C997&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–5&color=dfe6e9)](#)
 
-[![cortese_2004](https://img.shields.io/static/v1?label=&message=cortese_2004&color=eeeeee)](#imageability) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=2019](https://img.shields.io/static/v1?label=n&message=2%2C019&color=dfe6e9)](#) [![no-sd](https://img.shields.io/static/v1?label=SD&message=unavailable&color=ee5a24)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=100–700+MRC&color=dfe6e9)](#)
+[![bird_2001](https://img.shields.io/static/v1?label=&message=bird_2001&color=eeeeee)](#imageability) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=2019](https://img.shields.io/static/v1?label=n&message=2%2C019&color=dfe6e9)](#) [![no-sd](https://img.shields.io/static/v1?label=SD&message=unavailable&color=ee5a24)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=100–700+MRC&color=dfe6e9)](#)
 
 [![roberts_2019](https://img.shields.io/static/v1?label=&message=roberts_2019&color=eeeeee)](#gender) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=701](https://img.shields.io/static/v1?label=n&message=701&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7+masc–fem&color=dfe6e9)](#)
 
@@ -38,18 +40,52 @@ A unified compilation of English psycholinguistic norming datasets, built for us
 
 ---
 
-## Norm constructs
+## Norms and sources
 
-Each column in `lexis_wide` (and each `dimension` value in `lexis_long`) has a corresponding row in `lexis_meta` with the full `construct` text, scale, and citation. Below is an abbreviated version of `lexis_meta$construct`; load the package and inspect `lexis_meta` for complete wording.
+Each column in `lexis_wide` (and each `dimension` value in `lexis_long`) has a corresponding row in `lexis_meta` with the full construct text, scale, original source column, SD availability, and citation. The notes below combine the main construct descriptions with their source datasets.
 
-| Dimension | Construct (brief) |
+### Age of Acquisition
+Dimension: `aoa`
+
+Construct: estimated age, in years, when a speaker would first have understood the word if someone used it in front of them; linked to lexical fluency.
+
+Scale: 1–25 years. SD available.
+
+Source: Kuperman, V., Stadthagen-Gonzalez, H., & Brysbaert, M. (2012). Age-of-acquisition ratings for 30,000 English words. *Behavior Research Methods*, 44, 978–990.
+
+---
+
+### Concreteness
+Dimension: `concreteness`
+
+Construct: degree to which meaning is grounded in direct perception and action versus abstract, definition-only knowledge.
+
+Scale: 1–5, abstract to concrete. SD available.
+
+Source: Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40 thousand generally known English word lemmas. *Frontiers in Psychology*, 5, 1515.
+
+---
+
+### Valence, Arousal, Dominance
+Dimensions:
+
+| Dimension | Construct |
 |---|---|
-| `aoa` | Estimated age (years) when you would first have understood the word if someone used it in front of you; linked to lexical fluency. |
-| `boi` | How easily you can physically interact with the object or concept using your hands or body. |
-| `concreteness` | Degree to which meaning is grounded in direct perception and action versus abstract, definition-only knowledge. |
-| `gender_femininity` | Perceived masculine versus feminine association of the word’s meaning in discourse. |
-| `humor` | How funny or humor-associated the word feels; largely distinct from valence, arousal, and concreteness. |
-| `imageability` | Ease of bringing a vivid sensory mental image to mind (MRC-style scale). |
+| `valence` | Pleasantness of the feeling evoked by the word. |
+| `arousal` | Intensity or activation of the feeling evoked by the word. |
+| `dominance` | Sense of control or submissiveness implied by the word’s meaning. |
+
+Scale: 1–9 Self-Assessment Manikin. SD available.
+
+Source: Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. *Behavior Research Methods*, 45, 1191–1207.
+
+---
+
+### Lancaster Sensorimotor Norms
+Dimensions:
+
+| Dimension | Construct |
+|---|---|
 | `lancaster_auditory` | Strength of experiencing the concept through hearing. |
 | `lancaster_gustatory` | Strength of experiencing the concept through taste. |
 | `lancaster_haptic` | Strength of experiencing the concept through touch. |
@@ -58,18 +94,115 @@ Each column in `lexis_wide` (and each `dimension` value in `lexis_long`) has a c
 | `lancaster_visual` | Strength of experiencing the concept through sight. |
 | `lancaster_foot_leg` | Strength of foot/leg involvement in actions tied to the concept. |
 | `lancaster_hand_arm` | Strength of hand/arm involvement in actions tied to the concept. |
-| `lancaster_head` | Strength of head involvement (excluding mouth) in actions tied to the concept. |
+| `lancaster_head` | Strength of head involvement, excluding mouth, in actions tied to the concept. |
 | `lancaster_mouth` | Strength of mouth/throat involvement in actions tied to the concept. |
 | `lancaster_torso` | Strength of torso involvement in actions tied to the concept. |
-| `lexdec_rt` | Mean lexical-decision time (ms): word versus nonword judgment; reflects accessibility. |
-| `lexdec_naming_rt` | Mean naming latency (ms): read the word aloud; sensitive to phonology and articulation. |
-| `prevalence_pknown` | Estimated proportion of speakers who know the word (vocabulary-test based). |
-| `prevalence_score` | Probit-style z-score of prevalence (continuous; 0 ≈ known by half of speakers). |
-| `ser` | How strongly reading the word evokes sensory experience across modalities. |
-| `socialness` | How much the meaning concerns people, interaction, roles, institutions, or social ideas. |
-| `valence` | Pleasantness of the feeling evoked by the word (SAM / happiness–unhappiness). |
-| `arousal` | Intensity or activation of the feeling evoked by the word (calm versus stimulated). |
-| `dominance` | Sense of control or submissiveness implied by the word’s meaning. |
+
+Scale: 0–5 strength of perceptual/motor association. SD available.
+
+Source: Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. *Behavior Research Methods*, 52, 1271–1291.
+
+---
+
+### English Lexicon Project
+Dimensions:
+
+| Dimension | Construct |
+|---|---|
+| `lexdec_rt` | Mean lexical-decision time in ms: word versus nonword judgment; reflects accessibility. |
+| `lexdec_naming_rt` | Mean naming latency in ms: reading the word aloud; sensitive to phonology and articulation. |
+
+Scale: reaction time in milliseconds. SD available.
+
+Source: Balota, D. A., et al. (2007). The English Lexicon Project. *Behavior Research Methods*, 39, 445–459.
+
+---
+
+### Word Prevalence
+Dimensions:
+
+| Dimension | Construct |
+|---|---|
+| `prevalence_pknown` | Estimated proportion of speakers who know the word, based on vocabulary-test performance. |
+| `prevalence_score` | Probit-style continuous prevalence score; 0 is approximately known by half of speakers. |
+
+Scale: `prevalence_pknown` is 0–1; `prevalence_score` is unbounded. SD unavailable.
+
+Source: Brysbaert, M., Mandera, P., McCormick, S. F., & Keuleers, E. (2019). Word prevalence norms for 62,000 English lemmas. *Behavior Research Methods*, 51, 1583–1603.
+
+---
+
+### Body-Object Interaction
+Dimension: `boi`
+
+Construct: how easily a person can physically interact with the object or concept using their hands or body.
+
+Scale: 1–7. SD available.
+
+Source: Pexman, P. M., Muraki, E., Sidhu, D. M., Siakaluk, P. D., & Yap, M. J. (2019). Ratings for 8,000 English words. *Behavior Research Methods*, 51, 1134–1146.
+
+---
+
+### Socialness
+Dimension: `socialness`
+
+Construct: how much the meaning concerns people, interaction, roles, institutions, or social ideas.
+
+Scale: 1–7. SD available.
+
+Source: Diveica, V., Pexman, P. M., & Binney, R. J. (2023). Quantifying social semantics. *Behavior Research Methods*, 55, 461–473.
+
+---
+
+### Sensory Experience Rating
+Dimension: `ser`
+
+Construct: how strongly reading the word evokes sensory experience across modalities.
+
+Scale: 1–7. SD unavailable.
+
+Source: Juhasz, B. J., & Yap, M. J. (2013). Sensory experience ratings for over 5,000 mono- and disyllabic words. *Behavior Research Methods*, 45, 111–120.
+
+---
+
+### Humor
+Dimension: `humor`
+
+Construct: how funny or humor-associated the word feels; largely distinct from valence, arousal, and concreteness.
+
+Scale: 1–5. SD available.
+
+Source: Engelthaler, T., & Hills, T. T. (2018). Humor norms for 4,997 English words. *Behavior Research Methods*, 50, 1116–1124.
+
+---
+
+### Imageability
+Dimension: `imageability`
+
+Construct: ease of bringing a vivid sensory mental image to mind.
+
+Scale: transformed 100–700 imageability score, aligned to the MRC Psycholinguistic Database metric from original 1–7 ratings. SD unavailable.
+
+Source: Bird, H., Franklin, S., & Howard, D. (2001). Age of acquisition and imageability ratings for a large set of words, including verbs and function words. *Behavior Research Methods, Instruments, & Computers*, 33(1), 73–79.
+
+---
+
+### Gender
+Dimension: `gender_femininity`
+
+Construct: perceived masculine versus feminine association of the word’s meaning in discourse.
+
+Scale: 1–7, masculine to feminine. SD available.
+
+Source: Roberts, B. E., & Utych, S. M. (2019). Linking gender and language: Developing a database of masculine and feminine words. *American Politics Research*, 47, 1155–1173.
+
+---
+
+### Verbs in Space
+Dimensions:
+
+| Dimension | Construct |
+|---|---|
 | `vis_upwrd` | Verbs: composite association of the action with upward motion. |
 | `vis_dwnwrd` | Verbs: composite association with downward motion. |
 | `vis_vert` | Verbs: composite vertical spatial association. |
@@ -78,117 +211,34 @@ Each column in `lexis_wide` (and each `dimension` value in `lexis_long`) has a c
 | `vis_horiz` | Verbs: composite horizontal spatial association. |
 | `vis_toward` | Verbs: composite association with motion toward a reference point. |
 | `vis_away` | Verbs: composite association with motion away from a reference point. |
-| `n_defs` | Total definition count across POS in Wordset; indicator of semantic richness / polysemy. |
-| `n_pos` | Number of distinct parts of speech listed for the word in Wordset. |
-| `n_phones` | Phoneme count in the primary CMU pronunciation. |
-| `n_syllables` | Syllable count from CMU stress marking. |
 
----
+Scale: continuous directional association scores. SD unavailable.
 
-## Dataset details
-
-### Age of Acquisition
-Kuperman, V., Stadthagen-Gonzalez, H., & Brysbaert, M. (2012). Age-of-acquisition ratings for 30,000 English words. *Behavior Research Methods*, 44, 978–990.
-
-Dimensions: `aoa` — mean rating in years (1–25).
-
----
-
-### Concreteness
-Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40 thousand generally known English word lemmas. *Frontiers in Psychology*, 5, 1515.
-
-Dimensions: `concreteness` — mean rating (1–5, abstract to concrete).
-
----
-
-### Valence, Arousal, Dominance
-Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. *Behavior Research Methods*, 45, 1191–1207.
-
-Dimensions: `valence`, `arousal`, `dominance` — Self-Assessment Manikin scale (1–9).
-
----
-
-### Lancaster Sensorimotor Norms
-Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. *Behavior Research Methods*, 52, 1271–1291.
-
-Dimensions: `lancaster_auditory`, `lancaster_gustatory`, `lancaster_haptic`, `lancaster_interoceptive`, `lancaster_olfactory`, `lancaster_visual`, `lancaster_foot_leg`, `lancaster_hand_arm`, `lancaster_head`, `lancaster_mouth`, `lancaster_torso` — strength of perceptual/motor association (0–5).
-
----
-
-### English Lexicon Project
-Balota, D. A., et al. (2007). The English Lexicon Project. *Behavior Research Methods*, 39, 445–459.
-
-Dimensions: `lexdec_rt` (lexical decision, ms), `lexdec_naming_rt` (naming, ms).
-
----
-
-### Word Prevalence
-Brysbaert, M., Mandera, P., McCormick, S. F., & Keuleers, E. (2019). Word prevalence norms for 62,000 English lemmas. *Behavior Research Methods*, 51, 1583–1603.
-
-Dimensions: `prevalence_pknown` (proportion 0–1), `prevalence_score` (logit z-score).
-
----
-
-### Body-Object Interaction
-Pexman, P. M., Muraki, E., Sidhu, D. M., Siakaluk, P. D., & Yap, M. J. (2019). Ratings for 8,000 English words. *Behavior Research Methods*, 51, 1134–1146.
-
-Dimensions: `boi` — ease of physical interaction (1–7).
-
----
-
-### Socialness
-Diveica, V., Pexman, P. M., & Binney, R. J. (2023). Quantifying social semantics. *Behavior Research Methods*, 55, 461–473.
-
-Dimensions: `socialness` — degree of social relevance (1–7).
-
----
-
-### Sensory Experience Rating
-Juhasz, B. J., & Yap, M. J. (2013). Sensory experience ratings for over 5,000 mono- and disyllabic words. *Behavior Research Methods*, 45, 111–120.
-
-Dimensions: `ser` — strength of sensory experience evoked (1–7). No SD available.
-
----
-
-### Humor
-Engelthaler, T., & Hills, T. T. (2018). Humor norms for 4,997 English words. *Behavior Research Methods*, 50, 1116–1124.
-
-Dimensions: `humor` — funniness rating (1–5).
-
----
-
-### Imageability
-Cortese, M. J., & Fugett, A. (2004). Imageability ratings for 3,000 monosyllabic words. *Behavior Research Methods*, 36, 389–394.
-
-Dimensions: `imageability` — MRC Psycholinguistic Database scale (100–700). No SD available.
-
----
-
-### Gender
-Roberts, B. E., & Utych, S. M. (2019). Linking gender and language: Developing a database of masculine and feminine words. *American Politics Research*, 47, 1155–1173.
-
-Dimensions: `gender_femininity` — masculine to feminine (1–7). 701 words.
-
----
-
-### Verbs in Space
-See `verbs-in-space/brm.41.2.565.pdf`.
-
-Dimensions: `vis_upwrd`, `vis_dwnwrd`, `vis_vert`, `vis_left`, `vis_right`, `vis_horiz`, `vis_toward`, `vis_away` — spatial direction associations for 299 verbs.
+Source: see `verbs-in-space/brm.41.2.565.pdf`.
 
 ---
 
 ### Wordset Dictionary
-[wordset/wordset-dictionary](https://github.com/wordset/wordset-dictionary). Open English dictionary in JSON format.
+Derived dimensions:
 
-Derived dimensions: `n_defs` (total definitions across all POS), `n_pos` (number of distinct parts of speech). 108,140 entries.
+| Dimension | Construct |
+|---|---|
+| `n_defs` | Total definition count across POS; an indicator of semantic richness / polysemy. |
+| `n_pos` | Number of distinct parts of speech listed for the word. |
+
+Scale: counts. Source: [wordset/wordset-dictionary](https://github.com/wordset/wordset-dictionary), open English dictionary in JSON format.
 
 ---
 
 ### CMU Pronouncing Dictionary
-Carnegie Mellon University Pronouncing Dictionary v0.7b.
+Derived dimensions:
 
-Derived dimensions: `n_phones` (phoneme count), `n_syllables` (syllable count from stress markers). 125,763 base entries. `cmu_arpabet` (primary pronunciation string) available in wide format.
+| Dimension | Construct |
+|---|---|
+| `n_phones` | Phoneme count in the primary CMU pronunciation. |
+| `n_syllables` | Syllable count from CMU stress marking. |
+
+Scale: counts. Source: Carnegie Mellon University Pronouncing Dictionary v0.7b. `cmu_arpabet`, the primary pronunciation string, is available in wide format.
 
 ---
 
@@ -210,11 +260,11 @@ The maintainer pipeline writes `.rds` (and optionally `.csv`) alongside the raw 
 | `wordset_dict.rds/.csv` | One row per definition: word, POS, def, example, synonyms |
 | `wordset_index.rds/.csv` | One row per word × POS: n_defs |
 
-The final step copies those objects into `data/*.rda` so they ship inside the package (see `data-raw/build_package_data.R`).
+`data-raw/build_all.R` finishes by copying those objects into `data/*.rda` so they ship inside the package.
 
 ## Rebuilding data (maintainers)
 
-Paths are set at the top of each `data-raw/*.R` script (`base_dir`).
+Build scripts locate the package root from the current working directory or script location. Set `LEXIS_BASE_DIR=/path/to/lexis` to override that discovery, and set `LEXIS_FORCE_REBUILD=true` when you want to force the Wordset JSON parser to ignore cached `.rds` outputs.
 
 One shot:
 
@@ -222,15 +272,16 @@ One shot:
 source("data-raw/build_all.R")
 ```
 
-Or step by step:
+For partial rebuilds while developing, run individual phases:
 
 ```r
 source("data-raw/build_wordset.R")
 source("data-raw/build_lexis.R")
 source("data-raw/build_glove.R")
-source("data-raw/build_package_data.R")
 ```
 
-Prerequisites include the original norm files, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file expected by `data-raw/build_glove.R`. Root-level `build_wordset.R` and `build_lexis.R` mirror the `data-raw/` versions for convenience if your working directory layout matches.
+Run `data-raw/build_all.R` when you want the full pipeline plus final `data/*.rda` packaging.
+
+Prerequisites include the original norm files, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file expected by `data-raw/build_glove.R`.
 
 Requires (varies by script): `dplyr`, `tidyr`, `readr`, `readxl`, `purrr`, `jsonlite`, `textstem`, `data.table`

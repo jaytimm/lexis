@@ -3,7 +3,7 @@
 # and saves a named numeric matrix as data/glove50.rda.
 #
 # Prerequisites:
-#   - build_lexis.R must have been run (lexis_wide.rds must exist)
+#   - data-raw/build_lexis.R must have been run (lexis_wide.rds must exist)
 #   - xother/glove-embeddings/glove.6B.50d.txt must be present
 #
 # The raw file is ~164 MB (400k words × 50 dims). The subset saved to data/
@@ -15,13 +15,47 @@
 library(dplyr)
 library(readr)
 
-base_dir  <- "/home/jtimm/Dropbox/working-papers/psycho-data"
+find_base_dir <- function() {
+  env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
+  if (nzchar(env_dir)) return(normalizePath(env_dir, mustWork = TRUE))
+
+  this_file <- tryCatch(
+    normalizePath(sys.frame(1)$ofile, mustWork = FALSE),
+    error = function(e) ""
+  )
+  file_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+  if (!nzchar(this_file) && length(file_arg)) {
+    this_file <- sub("^--file=", "", file_arg[[1]])
+  }
+  candidates <- unique(c(getwd(), dirname(this_file), dirname(dirname(this_file))))
+  candidates <- candidates[nzchar(candidates)]
+
+  for (start in candidates) {
+    current <- normalizePath(start, mustWork = FALSE)
+    repeat {
+      desc <- file.path(current, "DESCRIPTION")
+      if (file.exists(desc) && any(grepl("^Package:\\s+lexis\\s*$", readLines(desc, warn = FALSE)))) {
+        return(current)
+      }
+      parent <- dirname(current)
+      if (identical(parent, current)) break
+      current <- parent
+    }
+  }
+
+  stop(
+    "Could not locate the lexis package root. Set LEXIS_BASE_DIR to the repo path.",
+    call. = FALSE
+  )
+}
+
+base_dir <- find_base_dir()
 glove_txt <- file.path(base_dir, "xother/glove-embeddings/glove.6B.50d.txt")
 lexis_rds <- file.path(base_dir, "lexis_wide.rds")
 out_path  <- file.path(base_dir, "data/glove50.rda")
 
 if (!file.exists(glove_txt)) stop("GloVe text file not found: ", glove_txt)
-if (!file.exists(lexis_rds)) stop("lexis_wide.rds not found — run build_lexis.R first.")
+if (!file.exists(lexis_rds)) stop("lexis_wide.rds not found — run data-raw/build_lexis.R first.")
 
 lexis_wide <- readRDS(lexis_rds)
 norms_vocab <- unique(tolower(lexis_wide$word))
