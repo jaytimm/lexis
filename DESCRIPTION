@@ -1,14 +1,33 @@
 Package: lexis
-Type: Package
-Title: What the Package Does (Title Case)
+Title: English Psycholinguistic Norms in a Unified Tidy Resource
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Jay", "Timm", email = "jay.timm01@gmail.com", role = c("aut", "cre"))
+Description: Compiles 13 English psycholinguistic norming datasets (age of acquisition,
+    concreteness, valence/arousal/dominance, imageability, body-object interaction,
+    humor, socialness, sensory experience, Lancaster sensorimotor norms, word prevalence,
+    lexical decision times, verbs-in-space, and gender connotation) together with
+    CMU phonological features, Wordset definition counts, and GloVe word embeddings
+    into a single tidy resource. Provides utility functions for lookup, search,
+    filtering, definition retrieval, embedding-based neighbor search, and stimulus
+    matching.
+License: CC BY 4.0
 Encoding: UTF-8
 LazyData: true
-Depends: 
-    R (>= 2.10)
-RoxygenNote: 7.2.0
+Depends:
+    R (>= 4.1.0)
+Imports:
+    dplyr,
+    tibble,
+    tidyr,
+    purrr,
+    rlang
+Suggests:
+    readr,
+    readxl,
+    jsonlite,
+    textstem,
+    data.table,
+    Matrix
+RoxygenNote: 7.3.2
+URL: https://github.com/jaytimm/lexis
+BugReports: https://github.com/jaytimm/lexis/issues
