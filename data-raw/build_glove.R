@@ -3,7 +3,7 @@
 # and saves a named numeric matrix as data/glove50.rda.
 #
 # Prerequisites:
-#   - data-raw/build_lexis.R must have been run (lexis_wide.rds must exist)
+#   - data-raw/build_lexis.R must have been run (data-raw/_build/lexis_wide.rds must exist)
 #   - xother/glove-embeddings/glove.6B.50d.txt must be present
 #
 # The raw file is ~164 MB (400k words × 50 dims). The subset saved to data/
@@ -51,35 +51,70 @@ find_base_dir <- function() {
 
 base_dir <- find_base_dir()
 glove_txt <- file.path(base_dir, "xother/glove-embeddings/glove.6B.50d.txt")
-lexis_rds <- file.path(base_dir, "lexis_wide.rds")
 out_path  <- file.path(base_dir, "data/glove50.rda")
+build_dir <- file.path(base_dir, "data-raw/_build")
+lexis_rds <- file.path(build_dir, "lexis_wide.rds")
 
 if (!file.exists(glove_txt)) stop("GloVe text file not found: ", glove_txt)
-if (!file.exists(lexis_rds)) stop("lexis_wide.rds not found — run data-raw/build_lexis.R first.")
+if (!file.exists(lexis_rds)) {
+  stop(
+    "data-raw/_build/lexis_wide.rds not found — run data-raw/build_lexis.R first.",
+    call. = FALSE
+  )
+}
 
 lexis_wide <- readRDS(lexis_rds)
 norms_vocab <- unique(tolower(lexis_wide$word))
 
-message("Reading GloVe 50d (400k words)...")
-glove_raw <- data.table::fread(
-  glove_txt,
-  header    = FALSE,
-  sep       = " ",
-  quote     = "",
-  data.table = FALSE,
-  showProgress = TRUE
+message("Streaming GloVe 50d in chunks (low-memory mode)...")
+chunk_size <- as.integer(Sys.getenv("LEXIS_GLOVE_CHUNK_SIZE", unset = "50000"))
+if (is.na(chunk_size) || chunk_size < 1000) chunk_size <- 50000L
+
+kept_words <- character(0)
+kept_vals  <- list()
+raw_vocab_n <- 0L
+chunk_i <- 0L
+
+chunk_cb <- readr::SideEffectChunkCallback$new(function(lines, pos) {
+  chunk_i <<- chunk_i + 1L
+  raw_vocab_n <<- raw_vocab_n + length(lines)
+
+  parts <- strsplit(lines, " ", fixed = TRUE)
+  words <- vapply(parts, `[`, "", 1)
+  keep_idx <- words %in% norms_vocab
+
+  if (any(keep_idx)) {
+    sel <- parts[keep_idx]
+    vals <- lapply(sel, function(x) as.numeric(x[2:51]))
+    kept_vals[[length(kept_vals) + 1L]] <<- do.call(rbind, vals)
+    kept_words <<- c(kept_words, words[keep_idx])
+  }
+
+  if (chunk_i %% 5L == 0L) {
+    message("  Processed ", raw_vocab_n, " rows; kept ", length(kept_words), " so far")
+  }
+})
+
+readr::read_lines_chunked(
+  file = glove_txt,
+  callback = chunk_cb,
+  chunk_size = chunk_size,
+  progress = TRUE
 )
 
-# Column 1 = word, columns 2–51 = embedding dimensions
-words_raw <- glove_raw[[1]]
-mat_raw   <- as.matrix(glove_raw[, -1])
-rownames(mat_raw) <- words_raw
+if (!length(kept_vals)) {
+  stop("No overlap found between norms vocabulary and GloVe rows.", call. = FALSE)
+}
 
-# Subset to norms vocabulary
-keep     <- intersect(norms_vocab, rownames(mat_raw))
-glove50  <- mat_raw[keep, , drop = FALSE]
+mat_raw <- do.call(rbind, kept_vals)
+rownames(mat_raw) <- kept_words
+colnames(mat_raw) <- paste0("V", seq_len(50))
 
-message("  Raw vocab:        ", nrow(mat_raw))
+# Preserve lexis_wide order and remove duplicate tokens if present.
+keep <- intersect(norms_vocab, rownames(mat_raw))
+glove50 <- mat_raw[keep, , drop = FALSE]
+
+message("  Raw vocab:        ", raw_vocab_n)
 message("  Norms vocab:      ", length(norms_vocab))
 message("  Intersection:     ", nrow(glove50))
 message("  Coverage:         ",

@@ -54,11 +54,17 @@
 #   but possible if source files contain near-duplicate entries.
 # ──────────────────────────────────────────────────────────────────────────────
 
-library(dplyr)
-library(tidyr)
-library(readr)
-library(readxl)
-library(purrr)
+if (!requireNamespace("pacman", quietly = TRUE)) {
+  install.packages("pacman", repos = "https://cloud.r-project.org")
+}
+pacman::p_load(
+  dplyr,
+  tidyr,
+  readr,
+  readxl,
+  purrr,
+  textstem
+)
 
 find_base_dir <- function() {
   env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
@@ -229,7 +235,8 @@ lanc_long <- map_dfr(lanc_modalities, function(mod) {
 
 ## 1h. English Lexicon Project — Balota et al. (2007) ─────────────────────────
 # I_Mean_RT: lexical decision RT (ms); I_NMG_Mean_RT: naming RT (ms).
-# No fixed scale bounds. Z-scores and accuracy retained in wide format.
+# No fixed scale bounds. Z-scores, accuracy, POS, pronunciation, morphology,
+# and any source frequency columns are retained in wide format.
 lex_raw <- read_csv(
   file.path(base_dir, "lexdec/Balota_et_al_2007.csv"),
   col_types = cols(),
@@ -267,6 +274,12 @@ prev_score <- prev_raw |>
   select(Word, Prevalence, Nobs) |>
   rename(word = Word, mean = Prevalence, n_ratings = Nobs) |>
   mutate(dataset = "prevalence", dimension = "prevalence_score",
+         sd = NA_real_, scale_min = NA_real_, scale_max = NA_real_)
+
+prev_freq_zipf <- prev_raw |>
+  select(Word, FreqZipfUS, Nobs) |>
+  rename(word = Word, mean = FreqZipfUS, n_ratings = Nobs) |>
+  mutate(dataset = "prevalence", dimension = "prevalence_freq_zipf",
          sd = NA_real_, scale_min = NA_real_, scale_max = NA_real_)
 
 ## 1j. Sensory Experience Rating — Juhasz & Yap (2013) ────────────────────────
@@ -357,6 +370,7 @@ vis_long <- map_dfr(vis_composite_dims, function(d) {
 ## 1n. Wordset definition counts (requires data-raw/build_wordset.R to have been run) ──
 # n_defs = total definitions across all POS for a word.
 # n_pos  = number of distinct parts of speech attested for a word.
+# ws_pos = semicolon-separated POS list retained as reference metadata.
 wordset_index_path <- file.path(
   base_dir, "xother/wordset-dictionary/wordset_index.rds"
 )
@@ -365,13 +379,29 @@ if (!file.exists(wordset_index_path)) {
 }
 wordset_index_raw <- readRDS(wordset_index_path)
 
-wordset_ndefs <- wordset_index_raw |>
-  group_by(word = tolower(trimws(word))) |>
-  summarise(
-    total_defs = sum(n_defs),
-    total_pos  = n(),
-    .groups = "drop"
-  )
+if (all(c("n_defs", "n_pos", "pos") %in% names(wordset_index_raw))) {
+  # New schema: one row per word already contains totals.
+  wordset_ndefs <- wordset_index_raw |>
+    transmute(
+      word = tolower(trimws(word)),
+      total_defs = as.numeric(n_defs),
+      total_pos = as.numeric(n_pos),
+      pos_list = pos
+    )
+} else {
+  # Backward compatibility for older schema (one row per word/POS).
+  wordset_ndefs <- wordset_index_raw |>
+    group_by(word = tolower(trimws(word))) |>
+    summarise(
+      total_defs = sum(n_defs),
+      total_pos  = n_distinct(pos),
+      pos_list   = {
+        vals <- sort(unique(stats::na.omit(pos)))
+        if (length(vals) == 0) NA_character_ else paste(vals, collapse = ";")
+      },
+      .groups = "drop"
+    )
+}
 
 ws_ndefs <- wordset_ndefs |>
   transmute(word, dataset = "wordset", dimension = "n_defs",
@@ -455,6 +485,7 @@ lexis_long <- bind_rows(
   lex_nam   |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   prev_pknown |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   prev_score  |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
+  prev_freq_zipf |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   ser,
   soc,
   vad_valence   |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
@@ -502,11 +533,25 @@ conc_supp <- conc_raw |>
 
 lex_supp <- lex_raw |>
   transmute(word = tolower(trimws(Word)),
+            lex_pron         = Pron,
+            lex_nmorph       = NMorph,
             lex_pos          = POS,
             lex_ld_zscore    = I_Zscore,
             lex_ld_accuracy  = I_Mean_Accuracy,
             lex_nam_zscore   = I_NMG_Zscore,
             lex_nam_accuracy = I_NMG_Mean_Accuracy)
+
+lex_freq_cols <- grep("freq|frequency", names(lex_raw), ignore.case = TRUE, value = TRUE)
+if (length(lex_freq_cols)) {
+  lex_freq_supp <- lex_raw |>
+    select(word = Word, all_of(lex_freq_cols)) |>
+    mutate(word = tolower(trimws(word))) |>
+    rename_with(
+      ~ paste0("lex_", tolower(gsub("[^A-Za-z0-9]+", "_", .x))),
+      -word
+    )
+  lex_supp <- left_join(lex_supp, lex_freq_supp, by = "word")
+}
 
 prev_supp <- prev_raw |>
   transmute(word = tolower(trimws(Word)),
@@ -545,6 +590,35 @@ img_supp <- img_raw |>
   transmute(word = tolower(trimws(WORD)),
             img_word_type = `Word type`)
 
+collapse_supp <- function(x) {
+  x |>
+    group_by(word) |>
+    summarise(
+      across(
+        everything(),
+        function(col) {
+          if (is.numeric(col)) {
+            out <- mean(col, na.rm = TRUE)
+            if (is.nan(out)) NA_real_ else out
+          } else {
+            vals <- sort(unique(stats::na.omit(col)))
+            if (length(vals) == 0) NA_character_ else paste(vals, collapse = ";")
+          }
+        }
+      ),
+      .groups = "drop"
+    )
+}
+
+aoa_supp    <- collapse_supp(aoa_supp)
+conc_supp   <- collapse_supp(conc_supp)
+lex_supp    <- collapse_supp(lex_supp)
+prev_supp   <- collapse_supp(prev_supp)
+gender_supp <- collapse_supp(gender_supp)
+lanc_supp   <- collapse_supp(lanc_supp)
+vis_supp    <- collapse_supp(vis_supp)
+img_supp    <- collapse_supp(img_supp)
+
 # Join all supplementary columns
 lexis_wide <- lexis_wide |>
   left_join(aoa_supp,    by = "word") |>
@@ -556,7 +630,7 @@ lexis_wide <- lexis_wide |>
   left_join(vis_supp,    by = "word") |>
   left_join(img_supp,    by = "word") |>
   left_join(
-    wordset_ndefs |> rename(ws_n_defs = total_defs, ws_n_pos = total_pos),
+    wordset_ndefs |> rename(ws_n_defs = total_defs, ws_n_pos = total_pos, ws_pos = pos_list),
     by = "word"
   ) |>
   left_join(
@@ -679,6 +753,11 @@ lexis_meta <- tribble(
   "Derived from Pknown using the probit function: NORM.INV(0.005 + Pknown × 0.99; 0; 1). No additional participant task; computed from the vocabulary test responses.",
   "Brysbaert, Mandera, McCormick & Keuleers (2019). Behav Res Methods, 51, 1583–1603.",
 
+  "prevalence_freq_zipf", "prevalence", "FreqZipfUS", "Zipf scale (frequency)", FALSE,
+  "SUBTLEX-US Zipf frequency for each prevalence item, where higher values indicate more frequent words in US English corpora.",
+  "Not a participant rating. Copied from the prevalence source table as an item-level corpus frequency covariate.",
+  "Brysbaert, Mandera, McCormick & Keuleers (2019). Behav Res Methods, 51, 1583–1603.",
+
   "ser", "sensory_experience", "Average SER", "1–7", FALSE,
   "Sensory experience rating (SER) reflects the degree to which a word evokes a sensory or perceptual experience in the mind of the reader. Unlike imageability, which emphasizes visual and mental images, SER captures activation across all sensory modalities including taste, touch, sound, and smell. SER predicts lexical decision times independently of imageability, AoA, and BOI.",
   "Participants rated 'the degree to which each word evoked a sensory experience' on a 1 to 7 scale (1 = no sensory experience, 7 = strong sensory experience), specifically 'the ability for a word to evoke an actual sensation (taste, touch, sight, sound, or smell) you experience by reading the word.' Responses were untimed; each questionnaire took under one hour.",
@@ -768,16 +847,12 @@ lexis_meta <- tribble(
 # ─────────────────────────────────────────────────────────────────────────────
 # SECTION 5: ADD LEMMA COLUMN
 # ─────────────────────────────────────────────────────────────────────────────
-# Uses textstem::lemmatize_words() (Morphy/lexicon hash tables).
-# Lemmatization is POS-unaware — defaults to noun rules — so verb inflections
-# (e.g. "running" → "run") may not always resolve correctly, but base-form
-# words (the majority of normed words) are returned unchanged.
-# Computed once on the unique word set and joined to both frames.
+# Uses textstem::lemmatize_words(). Lemmatization is POS-unaware, so base-form
+# words are usually unchanged and inflections may not always resolve.
 
-library(textstem)
-
-word_lemmas <- tibble(word = unique(lexis_wide$word)) |>
-  mutate(lemma = lemmatize_words(word))
+word_lemmas <- tibble(word = unique(lexis_wide$word))
+word_lemmas <- word_lemmas |>
+  mutate(lemma = textstem::lemmatize_words(word))
 
 lexis_long <- lexis_long |>
   left_join(word_lemmas, by = "word") |>
@@ -791,13 +866,16 @@ lexis_wide <- lexis_wide |>
 # SECTION 6: SAVE OUTPUTS
 # ─────────────────────────────────────────────────────────────────────────────
 
-saveRDS(lexis_long, file.path(base_dir, "lexis_long.rds"))
-saveRDS(lexis_wide, file.path(base_dir, "lexis_wide.rds"))
-saveRDS(lexis_meta, file.path(base_dir, "lexis_meta.rds"))
+build_dir <- file.path(base_dir, "data-raw/_build")
+dir.create(build_dir, recursive = TRUE, showWarnings = FALSE)
 
-write_csv(lexis_long, file.path(base_dir, "lexis_long.csv"))
-write_csv(lexis_wide, file.path(base_dir, "lexis_wide.csv"))
-write_csv(lexis_meta, file.path(base_dir, "lexis_meta.csv"))
+saveRDS(lexis_long, file.path(build_dir, "lexis_long.rds"))
+saveRDS(lexis_wide, file.path(build_dir, "lexis_wide.rds"))
+saveRDS(lexis_meta, file.path(build_dir, "lexis_meta.rds"))
+
+write_csv(lexis_long, file.path(build_dir, "lexis_long.csv"))
+write_csv(lexis_wide, file.path(build_dir, "lexis_wide.csv"))
+write_csv(lexis_meta, file.path(build_dir, "lexis_meta.csv"))
 
 message(
   "Done.\n",

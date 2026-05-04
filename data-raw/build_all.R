@@ -41,12 +41,13 @@ source(file.path(base_dir, "data-raw/build_glove.R"))
 
 message("\n=== Packaging LazyData objects ===")
 data_dir <- file.path(base_dir, "data")
+build_dir <- file.path(base_dir, "data-raw/_build")
 dir.create(data_dir, showWarnings = FALSE)
 
 required_rds <- c(
-  lexis_long    = file.path(base_dir, "lexis_long.rds"),
-  lexis_wide    = file.path(base_dir, "lexis_wide.rds"),
-  lexis_meta    = file.path(base_dir, "lexis_meta.rds"),
+  lexis_long    = file.path(build_dir, "lexis_long.rds"),
+  lexis_wide    = file.path(build_dir, "lexis_wide.rds"),
+  lexis_meta    = file.path(build_dir, "lexis_meta.rds"),
   wordset_dict  = file.path(base_dir, "xother/wordset-dictionary/wordset_dict.rds"),
   wordset_index = file.path(base_dir, "xother/wordset-dictionary/wordset_index.rds")
 )
@@ -78,14 +79,13 @@ save_rda("lexis_long",    required_rds[["lexis_long"]])
 save_rda("lexis_wide",    required_rds[["lexis_wide"]])
 save_rda("lexis_meta",    required_rds[["lexis_meta"]])
 save_rda("wordset_dict",  required_rds[["wordset_dict"]])
-save_rda("wordset_index", required_rds[["wordset_index"]])
 
 glove_path <- file.path(data_dir, "glove50.rda")
 if (file.exists(glove_path)) {
   message("glove50.rda present: ", round(file.size(glove_path) / 1e6, 1), " MB")
 } else {
   warning(
-    "data/glove50.rda not found; run data-raw/build_glove.R after lexis_wide.rds exists.",
+    "data/glove50.rda not found; run data-raw/build_glove.R after data-raw/_build/lexis_wide.rds exists.",
     call. = FALSE
   )
 }

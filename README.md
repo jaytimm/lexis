@@ -1,8 +1,6 @@
 # lexis
 
-`lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource. It cleans source files, standardizes word identifiers, harmonizes dimension names and scale metadata, aggregates source-specific measures into tidy long and wide tables, and keeps citations and construct notes alongside the data.
-
-Coverage is intentionally sparse: the package contains a large union vocabulary across norming studies, dictionary entries, pronunciation data, and embeddings, but each individual norm is available only for the words rated or listed in its original source. Missing values therefore mean "not available from this source," not that every word has every affective, semantic, sensorimotor, lexical, phonological, or spatial measure.
+`lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. The package contains a large union vocabulary across norming studies, dictionary entries, pronunciation data, and embeddings, with citations and construct notes kept alongside the data.
 
 ---
 
@@ -226,7 +224,7 @@ Derived dimensions:
 | `n_defs` | Total definition count across POS; an indicator of semantic richness / polysemy. |
 | `n_pos` | Number of distinct parts of speech listed for the word. |
 
-Scale: counts. Source: [wordset/wordset-dictionary](https://github.com/wordset/wordset-dictionary), open English dictionary in JSON format.
+Scale: counts. Source: [wordset/wordset-dictionary](https://github.com/wordset/wordset-dictionary), open English dictionary in JSON format. `ws_pos` is included in wide format as a semicolon-separated POS reference list. Because most norming studies present words without sentence context or explicit sense disambiguation, Wordset POS entries should not be interpreted as identifying the rated sense.
 
 ---
 
@@ -242,46 +240,24 @@ Scale: counts. Source: Carnegie Mellon University Pronouncing Dictionary v0.7b. 
 
 ---
 
-## Package data
+## Data objects
 
-After `library(lexis)`, the compiled norms and supplements load automatically ([LazyData](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Data-in-packages)): `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, `wordset_dict`, and `wordset_index`. You do not need to run any build scripts when using an installed package built from a complete source tree (with `data/*.rda` present).
+`lexis` provides `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, `wordset_dict`, and `wordset_index`.
 
-If you clone the repository and `data/` is empty or out of date, run the maintainer rebuild sequence below before `R CMD build` or before relying on those objects locally.
+## Rebuild
 
-## Build outputs (intermediate files)
-
-The maintainer pipeline writes `.rds` (and optionally `.csv`) alongside the raw sources; those paths are configured in the `data-raw/*.R` scripts.
-
-| File | Description |
-|---|---|
-| `lexis_long.rds/.csv` | Tidy long format: one row per word × dimension |
-| `lexis_wide.rds/.csv` | One row per word, one column per dimension |
-| `lexis_meta.rds/.csv` | Dimension-level metadata: source, scale, citation |
-| `wordset_dict.rds/.csv` | One row per definition: word, POS, def, example, synonyms |
-| `wordset_index.rds/.csv` | One row per word × POS: n_defs |
-
-`data-raw/build_all.R` finishes by copying those objects into `data/*.rda` so they ship inside the package.
-
-## Rebuilding data (maintainers)
-
-Build scripts locate the package root from the current working directory or script location. Set `LEXIS_BASE_DIR=/path/to/lexis` to override that discovery, and set `LEXIS_FORCE_REBUILD=true` when you want to force the Wordset JSON parser to ignore cached `.rds` outputs.
-
-One shot:
+Maintainers can rebuild the package data from the raw sources with:
 
 ```r
 source("data-raw/build_all.R")
 ```
 
-For partial rebuilds while developing, run individual phases:
+The rebuild expects the raw norm files in their source folders, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file used by `data-raw/build_glove.R`. To force the slow Wordset parse instead of reusing current cached outputs, set `LEXIS_FORCE_REBUILD=true`.
+
+Individual phases can also be run while developing:
 
 ```r
 source("data-raw/build_wordset.R")
 source("data-raw/build_lexis.R")
 source("data-raw/build_glove.R")
 ```
-
-Run `data-raw/build_all.R` when you want the full pipeline plus final `data/*.rda` packaging.
-
-Prerequisites include the original norm files, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file expected by `data-raw/build_glove.R`.
-
-Requires (varies by script): `dplyr`, `tidyr`, `readr`, `readxl`, `purrr`, `jsonlite`, `textstem`, `data.table`

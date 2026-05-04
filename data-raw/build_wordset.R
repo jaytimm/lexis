@@ -2,7 +2,9 @@
 # Parses the wordset-dictionary JSON files into two flat dataframes:
 #
 #   wordset_dict  — one row per meaning (definition), all fields preserved
-#   wordset_index — one row per word: word, pos (unique parts of speech), n_defs
+#   wordset_index — one row per word with:
+#                   n_defs (total definitions), n_pos (distinct POS count),
+#                   pos (semicolon-separated distinct POS)
 #
 # Source: xother/wordset-dictionary/jsons/*.json
 # Each JSON is a named list: word_string → {word, wordset_id, meanings: [...]}
@@ -73,14 +75,9 @@ outputs_fresh <- function(outputs, inputs) {
 }
 
 if (!force_rebuild && outputs_fresh(c(dict_rds, index_rds), json_files)) {
-  message("Wordset RDS outputs are current; skipping JSON parse.")
-  message("  ", dict_rds)
-  message("  ", index_rds)
-  if (!file.exists(dict_csv) || !file.exists(index_csv)) {
-    message("Writing missing Wordset CSV companion files from cached RDS outputs...")
-    write_csv(readRDS(dict_rds), dict_csv)
-    write_csv(readRDS(index_rds), index_csv)
-  }
+  message("Wordset dictionary already built; skipping JSON parse.")
+  message("  dict : ", dict_rds)
+  message("  index: ", index_rds)
   skip_wordset <- TRUE
 }
 
@@ -135,14 +132,28 @@ message("  Words:           ", n_distinct(wordset_dict$word))
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary index: one row per word
-# pos = unique speech_part values, alphabetically sorted, semicolon-separated
+# pos   = unique speech_part values, alphabetically sorted, semicolon-separated
 # n_defs = total number of meanings
+# n_pos  = number of unique POS values
 # ─────────────────────────────────────────────────────────────────────────────
 
 wordset_index <- wordset_dict |>
-  group_by(word, pos = speech_part) |>
-  summarise(n_defs = n(), .groups = "drop") |>
-  arrange(word, pos)
+  mutate(
+    word = tolower(trimws(word)),
+    speech_part = tolower(trimws(speech_part))
+  ) |>
+  filter(!is.na(word), word != "") |>
+  group_by(word) |>
+  summarise(
+    n_defs = n(),
+    n_pos = n_distinct(speech_part[!is.na(speech_part) & nzchar(speech_part)]),
+    pos = {
+      vals <- sort(unique(speech_part[!is.na(speech_part) & nzchar(speech_part)]))
+      if (length(vals) == 0) NA_character_ else paste(vals, collapse = ";")
+    },
+    .groups = "drop"
+  ) |>
+  arrange(word)
 
 message("  Index rows:      ", nrow(wordset_index))
 

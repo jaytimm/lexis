@@ -82,7 +82,9 @@
 #' Wordset dictionary index: one row per word × part of speech
 #'
 #' Summary index of the Wordset dictionary: for each word and POS combination,
-#' the number of definitions listed.
+#' the number of definitions listed. These POS-specific counts are reference
+#' metadata; most norming datasets are word-form ratings without sentence
+#' context or explicit sense/POS disambiguation.
 #'
 #' @format A tibble with columns:
 #' \describe{
