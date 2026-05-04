@@ -4,16 +4,6 @@ A unified compilation of English psycholinguistic norming datasets, built for us
 
 ---
 
-## Badge guide
-
-| Badge | Meaning |
-|---|---|
-| ![affective](https://img.shields.io/static/v1?label=&message=affective&color=ff9f43) ![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff) ![sensorimotor](https://img.shields.io/static/v1?label=&message=sensorimotor&color=00d2d3) ![lexical](https://img.shields.io/static/v1?label=&message=lexical&color=5f27cd) ![temporal](https://img.shields.io/static/v1?label=&message=temporal&color=e2d175) ![phonological](https://img.shields.io/static/v1?label=&message=phonological&color=c0a0f5) ![spatial](https://img.shields.io/static/v1?label=&message=spatial&color=baee90) ![dictionary](https://img.shields.io/static/v1?label=&message=dictionary&color=dddddd) | Construct type |
-| ![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71) ![no-sd](https://img.shields.io/static/v1?label=SD&message=unavailable&color=ee5a24) | SD per item |
-| ![likert](https://img.shields.io/static/v1?label=scale&message=likert&color=dfe6e9) ![rt](https://img.shields.io/static/v1?label=scale&message=RT+ms&color=dfe6e9) ![prop](https://img.shields.io/static/v1?label=scale&message=proportion&color=dfe6e9) ![count](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9) | Scale type |
-
----
-
 ## Datasets
 
 [![kuperman_2012](https://img.shields.io/static/v1?label=&message=kuperman_2012&color=eeeeee)](#age-of-acquisition) [![temporal](https://img.shields.io/static/v1?label=&message=temporal&color=e2d175)](#) [![n=30121](https://img.shields.io/static/v1?label=n&message=30%2C121&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–25+years&color=dfe6e9)](#)
@@ -45,6 +35,53 @@ A unified compilation of English psycholinguistic norming datasets, built for us
 [![wordset](https://img.shields.io/static/v1?label=&message=wordset&color=eeeeee)](#wordset-dictionary) [![dictionary](https://img.shields.io/static/v1?label=&message=dictionary&color=dddddd)](#) [![n=108140](https://img.shields.io/static/v1?label=n&message=108%2C140&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9)](#)
 
 [![cmu](https://img.shields.io/static/v1?label=&message=cmu_dict&color=eeeeee)](#cmu-pronouncing-dictionary) [![phonological](https://img.shields.io/static/v1?label=&message=phonological&color=c0a0f5)](#) [![n=125763](https://img.shields.io/static/v1?label=n&message=125%2C763&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9)](#)
+
+---
+
+## Norm constructs
+
+Each column in `lexis_wide` (and each `dimension` value in `lexis_long`) has a corresponding row in `lexis_meta` with the full `construct` text, scale, and citation. Below is an abbreviated version of `lexis_meta$construct`; load the package and inspect `lexis_meta` for complete wording.
+
+| Dimension | Construct (brief) |
+|---|---|
+| `aoa` | Estimated age (years) when you would first have understood the word if someone used it in front of you; linked to lexical fluency. |
+| `boi` | How easily you can physically interact with the object or concept using your hands or body. |
+| `concreteness` | Degree to which meaning is grounded in direct perception and action versus abstract, definition-only knowledge. |
+| `gender_femininity` | Perceived masculine versus feminine association of the word’s meaning in discourse. |
+| `humor` | How funny or humor-associated the word feels; largely distinct from valence, arousal, and concreteness. |
+| `imageability` | Ease of bringing a vivid sensory mental image to mind (MRC-style scale). |
+| `lancaster_auditory` | Strength of experiencing the concept through hearing. |
+| `lancaster_gustatory` | Strength of experiencing the concept through taste. |
+| `lancaster_haptic` | Strength of experiencing the concept through touch. |
+| `lancaster_interoceptive` | Strength of internal bodily sensations tied to the concept. |
+| `lancaster_olfactory` | Strength of experiencing the concept through smell. |
+| `lancaster_visual` | Strength of experiencing the concept through sight. |
+| `lancaster_foot_leg` | Strength of foot/leg involvement in actions tied to the concept. |
+| `lancaster_hand_arm` | Strength of hand/arm involvement in actions tied to the concept. |
+| `lancaster_head` | Strength of head involvement (excluding mouth) in actions tied to the concept. |
+| `lancaster_mouth` | Strength of mouth/throat involvement in actions tied to the concept. |
+| `lancaster_torso` | Strength of torso involvement in actions tied to the concept. |
+| `lexdec_rt` | Mean lexical-decision time (ms): word versus nonword judgment; reflects accessibility. |
+| `lexdec_naming_rt` | Mean naming latency (ms): read the word aloud; sensitive to phonology and articulation. |
+| `prevalence_pknown` | Estimated proportion of speakers who know the word (vocabulary-test based). |
+| `prevalence_score` | Probit-style z-score of prevalence (continuous; 0 ≈ known by half of speakers). |
+| `ser` | How strongly reading the word evokes sensory experience across modalities. |
+| `socialness` | How much the meaning concerns people, interaction, roles, institutions, or social ideas. |
+| `valence` | Pleasantness of the feeling evoked by the word (SAM / happiness–unhappiness). |
+| `arousal` | Intensity or activation of the feeling evoked by the word (calm versus stimulated). |
+| `dominance` | Sense of control or submissiveness implied by the word’s meaning. |
+| `vis_upwrd` | Verbs: composite association of the action with upward motion. |
+| `vis_dwnwrd` | Verbs: composite association with downward motion. |
+| `vis_vert` | Verbs: composite vertical spatial association. |
+| `vis_left` | Verbs: composite association with leftward motion. |
+| `vis_right` | Verbs: composite association with rightward motion. |
+| `vis_horiz` | Verbs: composite horizontal spatial association. |
+| `vis_toward` | Verbs: composite association with motion toward a reference point. |
+| `vis_away` | Verbs: composite association with motion away from a reference point. |
+| `n_defs` | Total definition count across POS in Wordset; indicator of semantic richness / polysemy. |
+| `n_pos` | Number of distinct parts of speech listed for the word in Wordset. |
+| `n_phones` | Phoneme count in the primary CMU pronunciation. |
+| `n_syllables` | Syllable count from CMU stress marking. |
 
 ---
 
@@ -155,7 +192,15 @@ Derived dimensions: `n_phones` (phoneme count), `n_syllables` (syllable count fr
 
 ---
 
-## Outputs
+## Package data
+
+After `library(lexis)`, the compiled norms and supplements load automatically ([LazyData](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Data-in-packages)): `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, `wordset_dict`, and `wordset_index`. You do not need to run any build scripts when using an installed package built from a complete source tree (with `data/*.rda` present).
+
+If you clone the repository and `data/` is empty or out of date, run the maintainer rebuild sequence below before `R CMD build` or before relying on those objects locally.
+
+## Build outputs (intermediate files)
+
+The maintainer pipeline writes `.rds` (and optionally `.csv`) alongside the raw sources; those paths are configured in the `data-raw/*.R` scripts.
 
 | File | Description |
 |---|---|
@@ -165,11 +210,27 @@ Derived dimensions: `n_phones` (phoneme count), `n_syllables` (syllable count fr
 | `wordset_dict.rds/.csv` | One row per definition: word, POS, def, example, synonyms |
 | `wordset_index.rds/.csv` | One row per word × POS: n_defs |
 
-## Build
+The final step copies those objects into `data/*.rda` so they ship inside the package (see `data-raw/build_package_data.R`).
+
+## Rebuilding data (maintainers)
+
+Paths are set at the top of each `data-raw/*.R` script (`base_dir`).
+
+One shot:
 
 ```r
-source("build_wordset.R")  # run first
-source("build_lexis.R")
+source("data-raw/build_all.R")
 ```
 
-Requires: `dplyr`, `tidyr`, `readr`, `readxl`, `purrr`, `jsonlite`, `textstem`
+Or step by step:
+
+```r
+source("data-raw/build_wordset.R")
+source("data-raw/build_lexis.R")
+source("data-raw/build_glove.R")
+source("data-raw/build_package_data.R")
+```
+
+Prerequisites include the original norm files, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file expected by `data-raw/build_glove.R`. Root-level `build_wordset.R` and `build_lexis.R` mirror the `data-raw/` versions for convenience if your working directory layout matches.
+
+Requires (varies by script): `dplyr`, `tidyr`, `readr`, `readxl`, `purrr`, `jsonlite`, `textstem`, `data.table`
