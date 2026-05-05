@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  pkgdown:
+  build-site:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,13 +23,16 @@ jobs:
             local::.
           needs: website
 
-      - name: Build and deploy pkgdown
-        uses: r-lib/actions/pkgdown@v2
+      - name: Build pkgdown site
+        run: Rscript -e 'pkgdown::build_site()'
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          upload-pages-artifact: true
+          path: docs
 
   deploy:
-    needs: pkgdown
+    needs: build-site
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -38,7 +41,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
-
