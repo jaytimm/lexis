@@ -1,16 +1,7 @@
 # data-raw/build_glove.R
-# Reads the raw GloVe 50d text file, subsets to words present in lexis_wide,
-# and saves a named numeric matrix as data/glove50.rda.
-#
-# Prerequisites:
-#   - data-raw/build_lexis.R must have been run (data-raw/_build/lexis_wide.rds must exist)
-#   - xother/glove-embeddings/glove.6B.50d.txt must be present
-#
-# The raw file is ~164 MB (400k words × 50 dims). The subset saved to data/
-# is typically ~30-50 MB compressed, small enough for GitHub.
-#
-# To load the full 400k vocabulary (e.g., for neighbor search beyond the norms
-# vocabulary), use lex_load_glove() which reads the raw file directly.
+# Reads the 2024 GloVe text files (50d and 300d), subsets to words present in
+# lexis_wide, and saves named numeric matrices as data/glove50.rda and
+# data/glove300.rda.
 
 library(dplyr)
 library(readr)
@@ -49,78 +40,83 @@ find_base_dir <- function() {
   )
 }
 
-base_dir <- find_base_dir()
-glove_txt <- file.path(base_dir, "datasets/xother/glove-embeddings/glove.6B.50d.txt")
-out_path  <- file.path(base_dir, "data/glove50.rda")
+read_glove_txt <- function(glove_txt, ndim, norms_vocab) {
+  message("Streaming ", ndim, "d GloVe in chunks (low-memory mode)...")
+  chunk_size <- as.integer(Sys.getenv("LEXIS_GLOVE_CHUNK_SIZE", unset = "50000"))
+  if (is.na(chunk_size) || chunk_size < 1000L) chunk_size <- 50000L
+
+  kept_words <- character(0)
+  kept_vals  <- list()
+  raw_vocab_n <- 0L
+  chunk_i <- 0L
+
+  chunk_cb <- readr::SideEffectChunkCallback$new(function(lines, pos) {
+    chunk_i    <<- chunk_i + 1L
+    raw_vocab_n <<- raw_vocab_n + length(lines)
+
+    parts    <- strsplit(lines, " ", fixed = TRUE)
+    words    <- vapply(parts, `[`, "", 1)
+    keep_idx <- words %in% norms_vocab
+
+    if (any(keep_idx)) {
+      sel  <- parts[keep_idx]
+      vals <- lapply(sel, function(x) as.numeric(x[seq(2, ndim + 1)]))
+      kept_vals[[length(kept_vals) + 1L]] <<- do.call(rbind, vals)
+      kept_words <<- c(kept_words, words[keep_idx])
+    }
+
+    if (chunk_i %% 5L == 0L) {
+      message("  Processed ", raw_vocab_n, " rows; kept ", length(kept_words), " so far")
+    }
+  })
+
+  readr::read_lines_chunked(
+    file      = glove_txt,
+    callback  = chunk_cb,
+    chunk_size = chunk_size,
+    progress  = TRUE
+  )
+
+  if (!length(kept_vals)) stop("No overlap found between norms vocabulary and GloVe rows.")
+
+  mat_raw          <- do.call(rbind, kept_vals)
+  rownames(mat_raw) <- kept_words
+  colnames(mat_raw) <- paste0("V", seq_len(ndim))
+
+  keep <- intersect(norms_vocab, rownames(mat_raw))
+  mat  <- mat_raw[keep, , drop = FALSE]
+
+  message("  Raw vocab:    ", raw_vocab_n)
+  message("  Norms vocab:  ", length(norms_vocab))
+  message("  Intersection: ", nrow(mat))
+  message("  Coverage:     ", round(100 * nrow(mat) / length(norms_vocab), 1), "%")
+
+  mat
+}
+
+base_dir  <- find_base_dir()
+embed_dir <- file.path(base_dir, "datasets/xother/glove-embeddings")
 build_dir <- file.path(base_dir, "data-raw/_build")
 lexis_rds <- file.path(build_dir, "lexis_wide.rds")
 
-if (!file.exists(glove_txt)) stop("GloVe text file not found: ", glove_txt)
 if (!file.exists(lexis_rds)) {
-  stop(
-    "data-raw/_build/lexis_wide.rds not found — run data-raw/build_lexis.R first.",
-    call. = FALSE
-  )
+  stop("data-raw/_build/lexis_wide.rds not found — run data-raw/build_lexis.R first.", call. = FALSE)
 }
 
-lexis_wide <- readRDS(lexis_rds)
+lexis_wide  <- readRDS(lexis_rds)
 norms_vocab <- unique(tolower(lexis_wide$word))
 
-message("Streaming GloVe 50d in chunks (low-memory mode)...")
-chunk_size <- as.integer(Sys.getenv("LEXIS_GLOVE_CHUNK_SIZE", unset = "50000"))
-if (is.na(chunk_size) || chunk_size < 1000) chunk_size <- 50000L
+txt50  <- file.path(embed_dir, "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt")
+txt300 <- file.path(embed_dir, "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt")
 
-kept_words <- character(0)
-kept_vals  <- list()
-raw_vocab_n <- 0L
-chunk_i <- 0L
+if (!file.exists(txt50))  stop("50d file not found: ",  txt50)
+if (!file.exists(txt300)) stop("300d file not found: ", txt300)
 
-chunk_cb <- readr::SideEffectChunkCallback$new(function(lines, pos) {
-  chunk_i <<- chunk_i + 1L
-  raw_vocab_n <<- raw_vocab_n + length(lines)
+glove50  <- read_glove_txt(txt50,  50L,  norms_vocab)
+glove300 <- read_glove_txt(txt300, 300L, norms_vocab)
 
-  parts <- strsplit(lines, " ", fixed = TRUE)
-  words <- vapply(parts, `[`, "", 1)
-  keep_idx <- words %in% norms_vocab
+save(glove50,  file = file.path(base_dir, "data/glove50.rda"),  compress = "xz")
+save(glove300, file = file.path(base_dir, "data/glove300.rda"), compress = "xz")
 
-  if (any(keep_idx)) {
-    sel <- parts[keep_idx]
-    vals <- lapply(sel, function(x) as.numeric(x[2:51]))
-    kept_vals[[length(kept_vals) + 1L]] <<- do.call(rbind, vals)
-    kept_words <<- c(kept_words, words[keep_idx])
-  }
-
-  if (chunk_i %% 5L == 0L) {
-    message("  Processed ", raw_vocab_n, " rows; kept ", length(kept_words), " so far")
-  }
-})
-
-readr::read_lines_chunked(
-  file = glove_txt,
-  callback = chunk_cb,
-  chunk_size = chunk_size,
-  progress = TRUE
-)
-
-if (!length(kept_vals)) {
-  stop("No overlap found between norms vocabulary and GloVe rows.", call. = FALSE)
-}
-
-mat_raw <- do.call(rbind, kept_vals)
-rownames(mat_raw) <- kept_words
-colnames(mat_raw) <- paste0("V", seq_len(50))
-
-# Preserve lexis_wide order and remove duplicate tokens if present.
-keep <- intersect(norms_vocab, rownames(mat_raw))
-glove50 <- mat_raw[keep, , drop = FALSE]
-
-message("  Raw vocab:        ", raw_vocab_n)
-message("  Norms vocab:      ", length(norms_vocab))
-message("  Intersection:     ", nrow(glove50))
-message("  Coverage:         ",
-        round(100 * nrow(glove50) / length(norms_vocab), 1), "%")
-
-save(glove50, file = out_path, compress = "xz")
-message("Saved to: ", out_path)
-message("  Object size: ",
-        format(utils::object.size(glove50), units = "MB"))
+message("Saved glove50  (", nrow(glove50),  " words x 50 dims)")
+message("Saved glove300 (", nrow(glove300), " words x 300 dims)")

@@ -3,6 +3,9 @@
 *.RData
 *.csv
 /data-raw/raw/
-datasets/xother/glove-embeddings/glove.6B.50d.txt
+datasets/xother/glove-embeddings/
 data-raw/rds/glove50d.rds
+data/glove300.rda
 datasets/xother/wordset-dictionary/jsons/
+
+analysis/

@@ -34,8 +34,6 @@
 
 [![wordset](https://img.shields.io/static/v1?label=&message=wordset&color=eeeeee)](#wordset-dictionary) [![dictionary](https://img.shields.io/static/v1?label=&message=dictionary&color=dddddd)](#) [![n=108140](https://img.shields.io/static/v1?label=n&message=108%2C140&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9)](#)
 
-[![cmu](https://img.shields.io/static/v1?label=&message=cmu_dict&color=eeeeee)](#cmu-pronouncing-dictionary) [![phonological](https://img.shields.io/static/v1?label=&message=phonological&color=c0a0f5)](#) [![n=125763](https://img.shields.io/static/v1?label=n&message=125%2C763&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9)](#)
-
 ---
 
 ## Norms and sources
@@ -225,18 +223,6 @@ Derived dimensions:
 | `n_pos` | Number of distinct parts of speech listed for the word. |
 
 Scale: counts. Source: [wordset/wordset-dictionary](https://github.com/wordset/wordset-dictionary), open English dictionary in JSON format. `ws_pos` is included in wide format as a semicolon-separated POS reference list. Because most norming studies present words without sentence context or explicit sense disambiguation, Wordset POS entries should not be interpreted as identifying the rated sense.
-
----
-
-### CMU Pronouncing Dictionary
-Derived dimensions:
-
-| Dimension | Construct |
-|---|---|
-| `n_phones` | Phoneme count in the primary CMU pronunciation. |
-| `n_syllables` | Syllable count from CMU stress marking. |
-
-Scale: counts. Source: Carnegie Mellon University Pronouncing Dictionary v0.7b. `cmu_arpabet`, the primary pronunciation string, is available in wide format.
 
 ---
 

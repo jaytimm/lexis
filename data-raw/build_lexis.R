@@ -413,61 +413,6 @@ ws_npos <- wordset_ndefs |>
             mean = as.numeric(total_pos), sd = NA_real_,
             n_ratings = NA_integer_, scale_min = NA_real_, scale_max = NA_real_)
 
-## 1o. CMU Pronouncing Dictionary ─────────────────────────────────────────────
-# Format: WORD  PH1 PH2 ... (two spaces). Stress on vowels: 0=unstressed,
-# 1=primary, 2=secondary. Alternate pronunciations marked WORD(2), WORD(3), etc.
-# Primary pronunciation only is used for n_phones and n_syllables.
-# n_alts = total pronunciations listed (including primary); kept in wide only.
-# Words with non-alpha characters in the headword (e.g. "!EXCLAMATION-POINT")
-# are dropped after lowercasing — they won't match anything in the norms.
-cmu_raw <- readLines(
-  file.path(base_dir, "datasets/xother/cmu-pronunciation/cmudict-0.7b"),
-  encoding = "latin1"
-)
-cmu_raw <- cmu_raw[!startsWith(cmu_raw, ";;;")]
-
-cmu_parsed <- tibble(raw = cmu_raw) |>
-  mutate(
-    headword = sub("  .*", "", raw),
-    phones   = sub("^[^  ]+  ", "", raw)
-  ) |>
-  mutate(
-    is_alt   = grepl("\\([0-9]+\\)$", headword),
-    base     = tolower(sub("\\([0-9]+\\)$", "", headword))
-  )
-
-# n_alts per word (count of all entries including primary)
-cmu_alts <- cmu_parsed |>
-  group_by(word = base) |>
-  summarise(cmu_n_alts = n(), .groups = "drop")
-
-# Primary pronunciation only
-cmu_primary <- cmu_parsed |>
-  filter(!is_alt) |>
-  transmute(
-    word       = base,
-    cmu_arpabet = phones,
-    n_phones   = lengths(strsplit(trimws(phones), " +")),
-    n_syllables = lengths(regmatches(phones, gregexpr("[012]", phones)))
-  )
-
-# Drop headwords that contain non-letter characters after lowercasing
-# (punctuation entries like !exclamation-point won't join to anything)
-cmu_primary <- cmu_primary |>
-  filter(grepl("^[a-z]", word))
-
-cmu_data <- cmu_primary |>
-  left_join(cmu_alts, by = "word")
-
-cmu_nphones <- cmu_data |>
-  transmute(word, dataset = "cmu", dimension = "n_phones",
-            mean = as.numeric(n_phones), sd = NA_real_,
-            n_ratings = NA_integer_, scale_min = NA_real_, scale_max = NA_real_)
-
-cmu_nsyllables <- cmu_data |>
-  transmute(word, dataset = "cmu", dimension = "n_syllables",
-            mean = as.numeric(n_syllables), sd = NA_real_,
-            n_ratings = NA_integer_, scale_min = NA_real_, scale_max = NA_real_)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SECTION 2: LONG-FORMAT TIDY DATAFRAME
@@ -493,9 +438,7 @@ lexis_long <- bind_rows(
   vad_dominance |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   vis_long |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   ws_ndefs,
-  ws_npos,
-  cmu_nphones,
-  cmu_nsyllables
+  ws_npos
 ) |>
   mutate(
     word      = tolower(trimws(word)),
@@ -631,10 +574,6 @@ lexis_wide <- lexis_wide |>
   left_join(img_supp,    by = "word") |>
   left_join(
     wordset_ndefs |> rename(ws_n_defs = total_defs, ws_n_pos = total_pos, ws_pos = pos_list),
-    by = "word"
-  ) |>
-  left_join(
-    cmu_data |> select(word, cmu_arpabet, cmu_n_alts),
     by = "word"
   )
 
@@ -831,17 +770,8 @@ lexis_meta <- tribble(
   "n_pos", "wordset", "n_pos (computed)", "count (unbounded)", FALSE,
   "Number of distinct parts of speech under which a word is listed in the Wordset dictionary. Reflects grammatical flexibility and is related to semantic ambiguity and frequency.",
   "Not a participant rating. Derived by counting distinct POS entries per word in wordset_index.",
-  "Wordset dictionary (github.com/wordset/wordset-dictionary).",
+  "Wordset dictionary (github.com/wordset/wordset-dictionary)."
 
-  "n_phones", "cmu", "n_phones (computed)", "count (unbounded)", FALSE,
-  "Total number of phonemes in the primary pronunciation of a word, derived from the CMU Pronouncing Dictionary ARPABET transcription. A standard measure of phonological length, distinct from orthographic length (number of letters).",
-  "Not a participant rating. Derived by counting space-delimited phoneme tokens in the primary CMU ARPABET transcription.",
-  "CMU Pronouncing Dictionary v0.7b (pronouncedict.com).",
-
-  "n_syllables", "cmu", "n_syllables (computed)", "count (unbounded)", FALSE,
-  "Number of syllables in the primary pronunciation of a word, derived from the count of stress-marked vowel nuclei in the CMU ARPABET transcription (digits 0, 1, 2 appended to vowel phonemes indicate stress level and mark syllable boundaries).",
-  "Not a participant rating. Derived by counting stress-digit characters (0, 1, 2) in the primary CMU ARPABET transcription, each of which marks one syllable nucleus.",
-  "CMU Pronouncing Dictionary v0.7b (pronouncedict.com)."
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
