@@ -762,6 +762,16 @@ lexis_meta <- tribble(
   "See vis_upwrd instructions. Composite derived from sub-measure spatial ratings.",
   "See verbs-in-space/brm.41.2.565.pdf.",
 
+  "glove50", "glove", "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt", "50-dim dense vector (continuous)", FALSE,
+  "Dense distributional semantic embedding vector (50 dimensions) from 2024 GloVe trained on Wikipedia + Gigaword. Each row in `glove50` is a word representation where geometric proximity reflects semantic relatedness.",
+  "Not a participant rating. Pretrained embedding vectors downloaded from the Stanford GloVe project page and subset to words present in lexis vocabulary.",
+  "Pennington, Socher & Manning (2014). EMNLP, 1532-1543. https://nlp.stanford.edu/projects/glove/",
+
+  "glove300", "glove", "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt", "300-dim dense vector (continuous)", FALSE,
+  "Dense distributional semantic embedding vector (300 dimensions) from 2024 GloVe trained on Wikipedia + Gigaword. Each row in `glove300` is a word representation where geometric proximity reflects semantic relatedness.",
+  "Not a participant rating. Pretrained embedding vectors downloaded from the Stanford GloVe project page and subset to words present in lexis vocabulary.",
+  "Pennington, Socher & Manning (2014). EMNLP, 1532-1543. https://nlp.stanford.edu/projects/glove/",
+
   "n_defs", "wordset", "n_defs (computed)", "count (unbounded)", FALSE,
   "Total number of definitions listed for a word across all parts of speech in the Wordset open English dictionary. A proxy for semantic richness and polysemy — words with more definitions tend to be more frequent, more concrete, and earlier acquired.",
   "Not a participant rating. Derived by summing n_defs across all POS entries per word in wordset_index.",
