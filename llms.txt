@@ -9,6 +9,17 @@ union vocabulary across norming studies, dictionary entries, and GloVe
 word embeddings, with citations and construct notes kept alongside the
 data.
 
+## Install
+
+`lexis` is not on CRAN. Install from GitHub:
+
+From GitHub:
+
+``` r
+
+remotes::install_github("jaytimm/lexis")
+```
+
 ------------------------------------------------------------------------
 
 ## Datasets

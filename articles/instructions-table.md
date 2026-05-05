@@ -6,7 +6,6 @@ instruction text from the LLM extraction artifact:
 
 ``` r
 
-library(lexis)
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
