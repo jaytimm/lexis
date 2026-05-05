@@ -1,0 +1,22 @@
+template:
+  bootstrap: 5
+
+home:
+  title: lexis
+  description: English psycholinguistic norms in a unified tidy resource.
+
+navbar:
+  structure:
+    left: [reference, articles]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/jaytimm/lexis
+
+articles:
+  - title: Guides
+    navbar: Guides
+    contents:
+      - lexis-demo
+
