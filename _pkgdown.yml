@@ -21,4 +21,5 @@ articles:
     navbar: Guides
     contents:
       - lexis-demo
+      - instructions-table
 
