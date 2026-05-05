@@ -54,16 +54,16 @@ find_base_dir <- function() {
 
 base_dir <- find_base_dir()
 
-json_dir <- file.path(base_dir, "xother/wordset-dictionary/jsons")
+json_dir <- file.path(base_dir, "datasets/xother/wordset-dictionary/jsons")
 json_files <- list.files(json_dir, pattern = "\\.json$", full.names = TRUE)
 if (length(json_files) == 0) {
   stop("No Wordset JSON files found under: ", json_dir, call. = FALSE)
 }
 
-dict_rds  <- file.path(base_dir, "xother/wordset-dictionary/wordset_dict.rds")
-index_rds <- file.path(base_dir, "xother/wordset-dictionary/wordset_index.rds")
-dict_csv  <- file.path(base_dir, "xother/wordset-dictionary/wordset_dict.csv")
-index_csv <- file.path(base_dir, "xother/wordset-dictionary/wordset_index.csv")
+dict_rds  <- file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_dict.rds")
+index_rds <- file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_index.rds")
+dict_csv  <- file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_dict.csv")
+index_csv <- file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_index.csv")
 
 force_rebuild <- identical(tolower(Sys.getenv("LEXIS_FORCE_REBUILD", unset = "false")), "true") ||
   "--force" %in% commandArgs(trailingOnly = TRUE)

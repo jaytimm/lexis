@@ -68,47 +68,16 @@ lex_neighbors <- function(word, n = 10, candidates = NULL) {
 
   target  <- glove50[word, , drop = FALSE]
   sims    <- .cosine_sim(target, search_mat)
+  sim_vals <- as.numeric(sims[1, ])
+  sim_words <- colnames(sims)
 
   tibble::tibble(
-    word       = names(sims),
-    similarity = as.numeric(sims)
+    word       = sim_words,
+    similarity = sim_vals
   ) |>
+    dplyr::filter(!is.na(.data$word), nzchar(.data$word)) |>
     dplyr::arrange(dplyr::desc(.data$similarity)) |>
     utils::head(n)
-}
-
-#' Compute cosine similarity between two words or sets of words
-#'
-#' Returns pairwise cosine similarity. If both \code{x} and \code{y} are single
-#' words, returns a scalar. If either is a vector, returns a named numeric vector.
-#'
-#' @param x character vector. One or more words (used as query/row).
-#' @param y character vector. One or more words (used as reference/column).
-#'   If NULL (default), \code{y} defaults to all words in \code{glove50}.
-#'
-#' @return Numeric scalar (single pair) or named numeric vector (one similarity
-#'   per \code{x}-word against each \code{y}-word, or a matrix if many-to-many).
-#'
-#' @examples
-#' lex_similarity("dog", "cat")
-#' lex_similarity(c("king", "queen"), "royalty")
-#'
-#' @export
-lex_similarity <- function(x, y) {
-  x <- tolower(trimws(x))
-  y <- tolower(trimws(y))
-
-  xmat <- lex_embed(x)
-  ymat <- lex_embed(y)
-
-  if (is.null(xmat) || is.null(ymat)) return(NULL)
-
-  sims <- .cosine_sim(xmat, ymat)
-
-  if (nrow(xmat) == 1 && nrow(ymat) == 1) {
-    return(as.numeric(sims))
-  }
-  sims
 }
 
 # Internal: cosine similarity between row vectors of a and row vectors of b

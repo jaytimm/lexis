@@ -242,22 +242,4 @@ Scale: counts. Source: Carnegie Mellon University Pronouncing Dictionary v0.7b. 
 
 ## Data objects
 
-`lexis` provides `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, `wordset_dict`, and `wordset_index`.
-
-## Rebuild
-
-Maintainers can rebuild the package data from the raw sources with:
-
-```r
-source("data-raw/build_all.R")
-```
-
-The rebuild expects the raw norm files in their source folders, Wordset JSON under `xother/wordset-dictionary/jsons/`, and the GloVe text file used by `data-raw/build_glove.R`. To force the slow Wordset parse instead of reusing current cached outputs, set `LEXIS_FORCE_REBUILD=true`.
-
-Individual phases can also be run while developing:
-
-```r
-source("data-raw/build_wordset.R")
-source("data-raw/build_lexis.R")
-source("data-raw/build_glove.R")
-```
+`lexis` provides `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, and `wordset_dict`.

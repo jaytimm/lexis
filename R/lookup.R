@@ -95,19 +95,33 @@ lex_search <- function(pattern, ignore_case = TRUE, cols = NULL) {
 #'
 #' @export
 lex_filter <- function(..., na.rm = TRUE) {
-  conds <- list(...)
-  out   <- lexis_wide
-  for (nm in names(conds)) {
-    if (!nm %in% names(out)) {
-      warning("Column '", nm, "' not found in lexis_wide — skipping.")
+  qs <- rlang::enquos(...)
+  if (length(qs) == 0) return(lexis_wide)
+
+  nm <- names(qs)
+  named_mode <- length(nm) > 0 && all(nzchar(nm))
+
+  out <- lexis_wide
+
+  # Expression mode: lex_filter(concreteness > 4, aoa < 8)
+  if (!named_mode) {
+    return(dplyr::filter(out, !!!qs))
+  }
+
+  # Named threshold mode (backward compatible):
+  # lex_filter(concreteness = 4, aoa = c(3, 8))
+  conds <- lapply(qs, rlang::eval_tidy)
+  for (col in names(conds)) {
+    if (!col %in% names(out)) {
+      warning("Column '", col, "' not found in lexis_wide — skipping.")
       next
     }
-    rng <- conds[[nm]]
-    if (na.rm) out <- dplyr::filter(out, !is.na(.data[[nm]]))
+    rng <- conds[[col]]
+    if (na.rm) out <- dplyr::filter(out, !is.na(.data[[col]]))
     if (length(rng) == 1) {
-      out <- dplyr::filter(out, .data[[nm]] >= rng[1])
+      out <- dplyr::filter(out, .data[[col]] >= rng[1])
     } else {
-      out <- dplyr::filter(out, .data[[nm]] >= rng[1], .data[[nm]] <= rng[2])
+      out <- dplyr::filter(out, .data[[col]] >= rng[1], .data[[col]] <= rng[2])
     }
   }
   out

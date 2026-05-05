@@ -48,8 +48,8 @@ required_rds <- c(
   lexis_long    = file.path(build_dir, "lexis_long.rds"),
   lexis_wide    = file.path(build_dir, "lexis_wide.rds"),
   lexis_meta    = file.path(build_dir, "lexis_meta.rds"),
-  wordset_dict  = file.path(base_dir, "xother/wordset-dictionary/wordset_dict.rds"),
-  wordset_index = file.path(base_dir, "xother/wordset-dictionary/wordset_index.rds")
+  wordset_dict  = file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_dict.rds"),
+  wordset_index = file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_index.rds")
 )
 missing <- required_rds[!file.exists(required_rds)]
 if (length(missing)) {

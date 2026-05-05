@@ -50,7 +50,7 @@ find_base_dir <- function() {
 }
 
 base_dir <- find_base_dir()
-glove_txt <- file.path(base_dir, "xother/glove-embeddings/glove.6B.50d.txt")
+glove_txt <- file.path(base_dir, "datasets/xother/glove-embeddings/glove.6B.50d.txt")
 out_path  <- file.path(base_dir, "data/glove50.rda")
 build_dir <- file.path(base_dir, "data-raw/_build")
 lexis_rds <- file.path(build_dir, "lexis_wide.rds")

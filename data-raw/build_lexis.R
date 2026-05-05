@@ -110,7 +110,7 @@ base_dir <- find_base_dir()
 # Columns: Word, OccurTotal (n lists), OccurNum (n raters), Rating.Mean, Rating.SD, Frequency
 # Scale: years (~1–25). Frequency = SUBTLEX-US log frequency (retained in wide).
 aoa_raw <- read_csv(
-  file.path(base_dir, "aoa/Kuperman_et_al_2012.csv"),
+  file.path(base_dir, "datasets/aoa/Kuperman_et_al_2012.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -124,7 +124,7 @@ aoa <- aoa_raw |>
 # File uses CR-only line endings; read.csv() handles this; read_csv() does not.
 # Columns 5-6 are artifacts from Excel formatting — dropped.
 boi_raw <- read.csv(
-  file.path(base_dir, "boi/13428_2018_1171_MOESM1_ESM.csv"),
+  file.path(base_dir, "datasets/boi/13428_2018_1171_MOESM1_ESM.csv"),
   header = TRUE, stringsAsFactors = FALSE, strip.white = TRUE
 )
 
@@ -146,7 +146,7 @@ boi <- boi_raw |>
 # Columns: Word, Bigram, Conc.M, Conc.SD, Unknown (n unknowns), Total (n raters),
 #          Percent_known, SUBTLEX (frequency). Scale: 1 (abstract) to 5 (concrete).
 conc_raw <- read_csv(
-  file.path(base_dir, "concreteness/Brysbaert_et_al_2014.csv"),
+  file.path(base_dir, "datasets/concreteness/Brysbaert_et_al_2014.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -161,7 +161,7 @@ conc <- conc_raw |>
 # Scale: 1 (masculine) to 7 (feminine). 'mean-a' = combined-sex overall mean.
 # FLAGGED: 'valence', 'arousal', 'dom' columns are entirely NA — dropped.
 gender_raw <- read_excel(
-  file.path(base_dir, "gender/appendix_-_word_rating_file.xlsx")
+  file.path(base_dir, "datasets/gender/appendix_-_word_rating_file.xlsx")
 )
 
 gender <- gender_raw |>
@@ -173,7 +173,7 @@ gender <- gender_raw |>
 ## 1e. Humor — Engelthaler & Hills (2018) ─────────────────────────────────────
 # Scale: 1 (not at all funny) to 5 (very funny).
 humor_raw <- read_csv(
-  file.path(base_dir, "humor/humor_dataset.csv"),
+  file.path(base_dir, "datasets/humor/humor_dataset.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -189,7 +189,7 @@ humor <- humor_raw |>
 # Original ratings were made on a 1–7 scale. '.' = no rating → NA.
 # No SD or N per item available. 'Word type' (POS) kept in wide format only.
 img_raw <- read_csv(
-  file.path(base_dir, "imageability/ratings.csv"),
+  file.path(base_dir, "datasets/imageability/ratings.csv"),
   col_types = cols(),
   na = c(".", "", "NA"),
   show_col_types = FALSE
@@ -209,7 +209,7 @@ img <- img_raw |>
 # Scale: 0 (not at all) to 5 (greatly). N per item not in this file.
 # Composite summaries (Max_strength, Minkowski3, Exclusivity, Dominant) kept in wide only.
 lanc_raw <- read_csv(
-  file.path(base_dir, "lancaster/Lancaster_sensorimotor_norms_for_39707_words.csv"),
+  file.path(base_dir, "datasets/lancaster/Lancaster_sensorimotor_norms_for_39707_words.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -238,7 +238,7 @@ lanc_long <- map_dfr(lanc_modalities, function(mod) {
 # No fixed scale bounds. Z-scores, accuracy, POS, pronunciation, morphology,
 # and any source frequency columns are retained in wide format.
 lex_raw <- read_csv(
-  file.path(base_dir, "lexdec/Balota_et_al_2007.csv"),
+  file.path(base_dir, "datasets/lexdec/Balota_et_al_2007.csv"),
   col_types = cols(),
   na = c("NA", ""),
   show_col_types = FALSE
@@ -261,7 +261,7 @@ lex_nam <- lex_raw |>
 # Prevalence: logit-transformed z-score (unbounded continuous).
 # FreqZipfUS = SUBTLEX-US Zipf frequency; retained in wide format as covariate.
 prev_raw <- read_excel(
-  file.path(base_dir, "prevalence/13428_2018_1077_MOESM2_ESM.xlsx")
+  file.path(base_dir, "datasets/prevalence/13428_2018_1077_MOESM2_ESM.xlsx")
 )
 
 prev_pknown <- prev_raw |>
@@ -286,7 +286,7 @@ prev_freq_zipf <- prev_raw |>
 # Scale: 1 (no sensory experience) to 7 (strong sensory experience).
 # Only mean available; no SD or N per item in this file.
 ser_raw <- read_xls(
-  file.path(base_dir, "sensory-experience/ser.xls")
+  file.path(base_dir, "datasets/sensory-experience/ser.xls")
 )
 
 ser <- ser_raw |>
@@ -301,7 +301,7 @@ ser <- ser_raw |>
 ## 1k. Socialness — Diveica et al. (2023) ─────────────────────────────────────
 # Scale: 1 (not at all social) to 7 (highly social).
 soc_raw <- read_csv(
-  file.path(base_dir, "socialness/Ratings_sum.stat.csv"),
+  file.path(base_dir, "datasets/socialness/Ratings_sum.stat.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -317,7 +317,7 @@ soc <- soc_raw |>
 # First column is an unnamed integer row index from original CSV — dropped automatically
 # because it does not match any select() target.
 vad_raw <- read_csv(
-  file.path(base_dir, "valence-arousal-dominance/BRM-emot-submit.csv"),
+  file.path(base_dir, "datasets/valence-arousal-dominance/BRM-emot-submit.csv"),
   col_types = cols(),
   show_col_types = FALSE
 )
@@ -347,7 +347,7 @@ vad_dominance <- vad_raw |>
 # definitions. Retained in wide format only.
 # 'list' (counterbalancing list assignment) dropped. Scale bounds not documented.
 vis_raw <- read_tsv(
-  file.path(base_dir, "verbs-in-space/MainNorms.txt"),
+  file.path(base_dir, "datasets/verbs-in-space/MainNorms.txt"),
   col_types = cols(),
   na = c("", "NA"),
   show_col_types = FALSE
@@ -372,7 +372,7 @@ vis_long <- map_dfr(vis_composite_dims, function(d) {
 # n_pos  = number of distinct parts of speech attested for a word.
 # ws_pos = semicolon-separated POS list retained as reference metadata.
 wordset_index_path <- file.path(
-  base_dir, "xother/wordset-dictionary/wordset_index.rds"
+  base_dir, "datasets/xother/wordset-dictionary/wordset_index.rds"
 )
 if (!file.exists(wordset_index_path)) {
   stop("wordset_index.rds not found — run data-raw/build_wordset.R first.")
@@ -421,7 +421,7 @@ ws_npos <- wordset_ndefs |>
 # Words with non-alpha characters in the headword (e.g. "!EXCLAMATION-POINT")
 # are dropped after lowercasing — they won't match anything in the norms.
 cmu_raw <- readLines(
-  file.path(base_dir, "xother/cmu-pronunciation/cmudict-0.7b"),
+  file.path(base_dir, "datasets/xother/cmu-pronunciation/cmudict-0.7b"),
   encoding = "latin1"
 )
 cmu_raw <- cmu_raw[!startsWith(cmu_raw, ";;;")]
