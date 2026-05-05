@@ -2,6 +2,16 @@
 
 `lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. The package contains a large union vocabulary across norming studies, dictionary entries, and GloVe word embeddings, with citations and construct notes kept alongside the data.
 
+## Install
+
+`lexis` is not on CRAN. Install from GitHub:
+
+From GitHub:
+
+```r
+remotes::install_github("jaytimm/lexis")
+```
+
 ---
 
 ## Datasets
