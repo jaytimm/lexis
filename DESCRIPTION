@@ -2,10 +2,10 @@ Package: lexis
 Title: English Psycholinguistic Norms in a Unified Tidy Resource
 Version: 0.1.0
 Authors@R: person("Jay", "Timm", email = "jay.timm01@gmail.com", role = c("aut", "cre"))
-Description: Compiles 13 English psycholinguistic norming datasets (age of acquisition,
+Description: Compiles 14 English psycholinguistic norming datasets (age of acquisition,
     concreteness, valence/arousal/dominance, imageability, body-object interaction,
     humor, socialness, sensory experience, Lancaster sensorimotor norms, word prevalence,
-    lexical decision times, verbs-in-space, and gender connotation) together with
+    lexical decision times, verbs-in-space, gender connotation, and iconicity) together with
     Wordset definition counts, and GloVe word embeddings
     into a single tidy resource. Provides utility functions for lookup, search,
     filtering, definition retrieval, embedding-based neighbor search, and stimulus

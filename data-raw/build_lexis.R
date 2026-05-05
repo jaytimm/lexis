@@ -312,7 +312,21 @@ soc <- soc_raw |>
          scale_min = 1, scale_max = 7) |>
   select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
 
-## 1l. Valence, Arousal, Dominance — Warriner et al. (2013) ───────────────────
+## 1l. Iconicity — Winter et al. (2023) ──────────────────────────────────────
+# Scale: 1–7 (arbitrary to iconic). SD available. prop_known retained as supp.
+iconicity_raw <- read_csv(
+  file.path(base_dir, "datasets/iconicity/iconicity_ratings_cleaned.csv"),
+  col_types = cols(),
+  show_col_types = FALSE
+)
+
+iconicity <- iconicity_raw |>
+  rename(word = word, mean = rating, sd = rating_sd, n_ratings = n_ratings) |>
+  mutate(dataset = "iconicity", dimension = "iconicity",
+         scale_min = 1, scale_max = 7) |>
+  select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
+
+## 1m. Valence, Arousal, Dominance — Warriner et al. (2013) ───────────────────
 # Scale: 1–9 (Self-Assessment Manikin). Full-sample summary (*.Sum) only.
 # First column is an unnamed integer row index from original CSV — dropped automatically
 # because it does not match any select() target.
@@ -424,6 +438,7 @@ lexis_long <- bind_rows(
   conc,
   gender,
   humor,
+  iconicity,
   img,
   lanc_long |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   lex_ldt   |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
@@ -533,6 +548,11 @@ img_supp <- img_raw |>
   transmute(word = tolower(trimws(WORD)),
             img_word_type = `Word type`)
 
+iconicity_supp <- iconicity_raw |>
+  transmute(word = tolower(trimws(word)),
+            iconicity_prop_known = prop_known,
+            iconicity_n          = n)
+
 collapse_supp <- function(x) {
   x |>
     group_by(word) |>
@@ -560,7 +580,8 @@ prev_supp   <- collapse_supp(prev_supp)
 gender_supp <- collapse_supp(gender_supp)
 lanc_supp   <- collapse_supp(lanc_supp)
 vis_supp    <- collapse_supp(vis_supp)
-img_supp    <- collapse_supp(img_supp)
+img_supp         <- collapse_supp(img_supp)
+iconicity_supp   <- collapse_supp(iconicity_supp)
 
 # Join all supplementary columns
 lexis_wide <- lexis_wide |>
@@ -571,7 +592,8 @@ lexis_wide <- lexis_wide |>
   left_join(gender_supp, by = "word") |>
   left_join(lanc_supp,   by = "word") |>
   left_join(vis_supp,    by = "word") |>
-  left_join(img_supp,    by = "word") |>
+  left_join(img_supp,       by = "word") |>
+  left_join(iconicity_supp, by = "word") |>
   left_join(
     wordset_ndefs |> rename(ws_n_defs = total_defs, ws_n_pos = total_pos, ws_pos = pos_list),
     by = "word"
@@ -761,6 +783,11 @@ lexis_meta <- tribble(
   "Composite rating of the degree to which the action denoted by a verb is associated with motion away from the self or a reference point.",
   "See vis_upwrd instructions. Composite derived from sub-measure spatial ratings.",
   "See verbs-in-space/brm.41.2.565.pdf.",
+
+  "iconicity", "iconicity", "rating", "1–7", TRUE,
+  "Iconicity reflects the degree to which a word's sound or orthographic form resembles or evokes its meaning (sound symbolism). Higher values indicate greater perceived resemblance between form and meaning. Iconicity is distinct from concreteness and imageability, and tends to be higher for words denoting sounds, motion, and basic physical experiences.",
+  "Participants were asked to rate how much each word 'sounds like what it means' on a scale from 1 (the word does not sound like what it means at all) to 7 (the word very much sounds like what it means). A 'don't know' response option was available; such responses were excluded from the mean.",
+  "Winter, Lupyan, Perry, Dingemanse & Perlman (2023). Behav Res Methods.",
 
   "glove50", "glove", "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt", "50-dim dense vector (continuous)", FALSE,
   "Dense distributional semantic embedding vector (50 dimensions) from 2024 GloVe trained on Wikipedia + Gigaword. Each row in `glove50` is a word representation where geometric proximity reflects semantic relatedness.",

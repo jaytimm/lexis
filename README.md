@@ -42,6 +42,8 @@ remotes::install_github("jaytimm/lexis")
 
 [![verbs_in_space](https://img.shields.io/static/v1?label=&message=verbs_in_space&color=eeeeee)](#verbs-in-space) [![spatial](https://img.shields.io/static/v1?label=&message=spatial&color=baee90)](#) [![n=299](https://img.shields.io/static/v1?label=n&message=299&color=dfe6e9)](#) [![no-sd](https://img.shields.io/static/v1?label=SD&message=unavailable&color=ee5a24)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=continuous&color=dfe6e9)](#) [![dims=8](https://img.shields.io/static/v1?label=directions&message=8&color=dfe6e9)](#)
 
+[![winter_2023](https://img.shields.io/static/v1?label=&message=winter_2023&color=eeeeee)](#iconicity) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=14776](https://img.shields.io/static/v1?label=n&message=14%2C776&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7&color=dfe6e9)](#)
+
 [![wordset](https://img.shields.io/static/v1?label=&message=wordset&color=eeeeee)](#wordset-dictionary) [![dictionary](https://img.shields.io/static/v1?label=&message=dictionary&color=dddddd)](#) [![n=108140](https://img.shields.io/static/v1?label=n&message=108%2C140&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=count&color=dfe6e9)](#)
 
 ---
@@ -221,6 +223,17 @@ Dimensions:
 Scale: continuous directional association scores. SD unavailable.
 
 Source: Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. *Behavior Research Methods*, 41(2), 565–574.
+
+---
+
+### Iconicity
+Dimension: `iconicity`
+
+Construct: degree to which a word's sound or form resembles or evokes its meaning (sound symbolism); rated by naive speakers without prior knowledge of the concept.
+
+Scale: 1–7, arbitrary to iconic. SD available.
+
+Source: Winter, B., Lupyan, G., Perry, L. K., Dingemanse, M., & Perlman, M. (2023). Iconicity ratings for 14,000+ English words. *Behavior Research Methods*.
 
 ---
 
