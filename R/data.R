@@ -79,6 +79,24 @@
 #' @source Wordset dictionary \url{https://github.com/wordset/wordset-dictionary}
 "wordset_dict"
 
+#' Participant-facing instruction text from the 13 norming datasets
+#'
+#' Verbatim instruction text shown to participants in each norming study,
+#' extracted from source PDFs. One row per distinct instruction block.
+#'
+#' @format A tibble with columns:
+#' \describe{
+#'   \item{dataset}{character. Source dataset identifier (e.g., "aoa", "concreteness").}
+#'   \item{instruction_id}{character. Unique identifier for the instruction block.}
+#'   \item{instruction_type}{character. Type of instruction (e.g., "main", "example").}
+#'   \item{status}{character. Extraction status (e.g., "verbatim", "paraphrased").}
+#'   \item{source_pdf}{character. Filename of the source PDF.}
+#'   \item{source_pages}{character. Page range where the instruction appears.}
+#'   \item{instruction_text_verbatim}{character. Verbatim instruction text.}
+#'   \item{notes}{character. Extractor notes, if any.}
+#' }
+"norming_instructions"
+
 #' Wordset dictionary index: one row per word × part of speech
 #'
 #' Summary index of the Wordset dictionary: for each word and POS combination,

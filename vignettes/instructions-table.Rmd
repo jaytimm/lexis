@@ -14,60 +14,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette provides an interactive table of participant-facing instruction
-text from the LLM extraction artifact:
-`data-raw/_build/norming_instructions.jsonl`.
+Participant-facing instruction text from the 13 norming datasets included in
+`lexis`, extracted from source PDFs via LLM and stored as `norming_instructions`.
 
 ```{r}
-library(dplyr)
-library(jsonlite)
+library(lexis)
 library(DT)
 ```
 
-## Build instruction table
-
-```{r}
-resolve_instructions_path <- function() {
-  candidates <- c(
-    "data-raw/_build/norming_instructions.jsonl",
-    "../data-raw/_build/norming_instructions.jsonl",
-    "../../data-raw/_build/norming_instructions.jsonl"
-  )
-  found <- candidates[file.exists(candidates)]
-  if (!length(found)) {
-    stop("Could not find data-raw/_build/norming_instructions.jsonl")
-  }
-  found[[1]]
-}
-
-jsonl_path <- resolve_instructions_path()
-json_lines <- readLines(jsonl_path, warn = FALSE, encoding = "UTF-8")
-json_lines <- json_lines[nzchar(trimws(json_lines))]
-
-instruction_tbl <- bind_rows(lapply(json_lines, jsonlite::fromJSON)) |>
-  transmute(
-    dataset,
-    instruction_id,
-    instruction_type,
-    status,
-    source_pdf,
-    source_pages,
-    instruction_text_verbatim,
-    notes
-  ) |>
-  arrange(dataset, instruction_id)
-
-instruction_tbl
-```
-
-## Interactive view
-
-Use the search box to filter by dataset, instruction type/status, or keywords
-in the verbatim instruction text.
-
 ```{r}
 DT::datatable(
-  instruction_tbl,
+  norming_instructions,
   rownames = FALSE,
   filter = "top",
   options = list(
@@ -77,4 +34,3 @@ DT::datatable(
   )
 )
 ```
-
