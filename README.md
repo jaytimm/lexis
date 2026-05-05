@@ -1,6 +1,6 @@
 # lexis
 
-`lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. The package contains a large union vocabulary across norming studies, dictionary entries, pronunciation data, and embeddings, with citations and construct notes kept alongside the data.
+`lexis` is an R data package that collates English psycholinguistic norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. The package contains a large union vocabulary across norming studies, dictionary entries, and GloVe word embeddings, with citations and construct notes kept alongside the data.
 
 ---
 
@@ -210,7 +210,7 @@ Dimensions:
 
 Scale: continuous directional association scores. SD unavailable.
 
-Source: see `verbs-in-space/brm.41.2.565.pdf`.
+Source: Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. *Behavior Research Methods*, 41(2), 565–574.
 
 ---
 
@@ -229,3 +229,13 @@ Scale: counts. Source: [wordset/wordset-dictionary](https://github.com/wordset/w
 ## Data objects
 
 `lexis` provides `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`, and `wordset_dict`.
+
+| Object | Description |
+|---|---|
+| `lexis_long` | Tidy long-format table: one row per word–dimension observation. Columns: `word`, `lemma`, `dataset`, `dimension`, `mean`, `sd`, `n_ratings`, `scale_min`, `scale_max`. |
+| `lexis_wide` | Wide-format table: one row per word, one column per dimension. Includes supplementary columns from source datasets. |
+| `lexis_meta` | Metadata table: one row per dimension, with construct description, scale, source column, SD availability, and citation. |
+| `glove50` | Named numeric matrix (145,670 × 50): 2024 GloVe embeddings trained on Wikipedia + Gigaword. Row names are word forms. |
+| `glove300` | Named numeric matrix (145,670 × 300): 2024 GloVe embeddings, 300-dimensional. Not tracked in git; rebuild with `data-raw/build_glove.R`. |
+| `wordset_dict` | Wordset dictionary entries with definitions, POS, and examples. |
+

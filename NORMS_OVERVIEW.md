@@ -40,8 +40,6 @@ Gender connotation (`gender_femininity`) measures perceived masculine-to-feminin
 
 Wordset-derived measures (`n_defs`, `n_pos`) describe dictionary structure at the word-form level. Definition count is a rough indicator of semantic richness or polysemy, while part-of-speech count captures grammatical flexibility. The wide data also includes `ws_pos`, a semicolon-separated list of dictionary POS labels, and `wordset_index` keeps the POS-specific definition counts. These are reference metadata, not human ratings. Because most norming studies present words without sentence context or explicit sense disambiguation, POS-specific dictionary entries should not be interpreted as identifying which sense or grammatical use was rated.
 
-CMU-derived measures (`n_phones`, `n_syllables`) describe phonological form. They provide length and pronunciation information that can matter for naming, memory, speech production, and stimulus matching. The wide data also keeps the primary ARPABET transcription where available.
-
 GloVe embeddings (`glove50`) provide distributional semantic vectors for words in the compiled vocabulary. These are not norming ratings, but they offer a complementary corpus-based representation of lexical meaning. They can be used to estimate semantic similarity, find neighbors, or compare human-rated semantic dimensions with distributional structure.
 
 ## How the Constructs Relate
@@ -56,7 +54,7 @@ Several included norms cluster around broad conceptual families:
 | Embodied meaning | Lancaster dimensions, `boi`, verbs-in-space dimensions | How is the word tied to sensation, action, body, or space? |
 | Affective meaning | `valence`, `arousal`, `dominance`, `humor` | What emotional or evaluative response does the word evoke? |
 | Social meaning | `socialness`, `gender_femininity` | How much social or cultural meaning is carried by the word? |
-| Formal lexical structure | `n_defs`, `n_pos`, `n_phones`, `n_syllables`, `cmu_arpabet` | What structural properties does the lexical item have? |
+| Formal lexical structure | `n_defs`, `n_pos` | What structural properties does the lexical item have? |
 | Distributional semantics | `glove50` | What does corpus context suggest about semantic similarity? |
 
 These groupings are interpretive rather than fixed. For example, humor is affective but also social and pragmatic; BOI is sensorimotor but also related to concreteness; prevalence is lexical availability but often predicts lexical access; imageability sits between semantic grounding and sensory experience. The value of the unified resource is that these overlaps can be modeled directly rather than treated as interchangeable labels.
