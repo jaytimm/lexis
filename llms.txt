@@ -349,6 +349,21 @@ identifying the rated sense.
 
 ------------------------------------------------------------------------
 
+### GloVe Embeddings
+
+Dimensions: dense semantic vectors (`glove50`, `glove300`) trained on
+large text corpora and used for distributional semantic similarity.
+
+Scale: continuous numeric vector components (50d and 300d).
+
+Source: Pennington, J., Socher, R., & Manning, C. D. (2014). GloVe:
+Global vectors for word representation. Proceedings of the 2014
+Conference on Empirical Methods in Natural Language Processing (EMNLP),
+1532-1543. Project page: [Stanford
+GloVe](https://nlp.stanford.edu/projects/glove/).
+
+------------------------------------------------------------------------
+
 ## Data objects
 
 `lexis` provides `lexis_long`, `lexis_wide`, `lexis_meta`, `glove50`,
