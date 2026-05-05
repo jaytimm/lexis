@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NormingInstructionRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset",
+    "source_pdf",
+    "source_pages",
+    "instruction_id",
+    "instruction_text_verbatim",
+    "instruction_type",
+    "status",
+    "notes"
+  ],
+  "properties": {
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_pdf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_pages": {
+      "type": "string",
+      "minLength": 1
+    },
+    "instruction_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "instruction_text_verbatim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "instruction_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "extracted",
+        "not_found",
+        "ambiguous"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

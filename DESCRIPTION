@@ -25,6 +25,7 @@ Suggests:
     readr,
     readxl,
     jsonlite,
+    DT,
     textstem,
     data.table,
     Matrix,

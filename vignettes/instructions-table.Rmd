@@ -1,0 +1,81 @@
+---
+title: "Instruction Table"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Instruction Table}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette provides an interactive table of participant-facing instruction
+text from the LLM extraction artifact:
+`data-raw/_build/norming_instructions.jsonl`.
+
+```{r}
+library(lexis)
+library(dplyr)
+library(jsonlite)
+library(DT)
+```
+
+## Build instruction table
+
+```{r}
+resolve_instructions_path <- function() {
+  candidates <- c(
+    "data-raw/_build/norming_instructions.jsonl",
+    "../data-raw/_build/norming_instructions.jsonl",
+    "../../data-raw/_build/norming_instructions.jsonl"
+  )
+  found <- candidates[file.exists(candidates)]
+  if (!length(found)) {
+    stop("Could not find data-raw/_build/norming_instructions.jsonl")
+  }
+  found[[1]]
+}
+
+jsonl_path <- resolve_instructions_path()
+json_lines <- readLines(jsonl_path, warn = FALSE, encoding = "UTF-8")
+json_lines <- json_lines[nzchar(trimws(json_lines))]
+
+instruction_tbl <- bind_rows(lapply(json_lines, jsonlite::fromJSON)) |>
+  transmute(
+    dataset,
+    instruction_id,
+    instruction_type,
+    status,
+    source_pdf,
+    source_pages,
+    instruction_text_verbatim,
+    notes
+  ) |>
+  arrange(dataset, instruction_id)
+
+instruction_tbl
+```
+
+## Interactive view
+
+Use the search box to filter by dataset, instruction type/status, or keywords
+in the verbatim instruction text.
+
+```{r}
+DT::datatable(
+  instruction_tbl,
+  rownames = FALSE,
+  filter = "top",
+  options = list(
+    pageLength = 15,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+)
+```
+

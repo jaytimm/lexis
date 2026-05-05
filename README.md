@@ -231,7 +231,7 @@ Dimensions: dense semantic vectors (`glove50`, `glove300`) trained on large text
 
 Scale: continuous numeric vector components (50d and 300d).
 
-Source: Pennington, J., Socher, R., & Manning, C. D. (2014). GloVe: Global vectors for word representation. Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), 1532-1543. Project page: [Stanford GloVe](https://nlp.stanford.edu/projects/glove/).
+Source: Pennington, J., Socher, R., & Manning, C. D. (2014). GloVe: Global vectors for word representation. Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), 1532-1543. Carlson, R., Bauer, J., & Manning, C. D. (2025). A New Pair of GloVes. arXiv:2507.18103. [https://arxiv.org/abs/2507.18103](https://arxiv.org/abs/2507.18103). Project page: [Stanford GloVe](https://nlp.stanford.edu/projects/glove/).
 
 ---
 
