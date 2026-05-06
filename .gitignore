@@ -9,5 +9,6 @@ data/glove300.rda
 datasets/xother/wordset-dictionary/jsons/
 
 analysis/
+docs/
 
 claude.md

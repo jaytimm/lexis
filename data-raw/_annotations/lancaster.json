@@ -1,0 +1,169 @@
+{
+  "constructs": [
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_auditory",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through hearing. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_gustatory",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through taste. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_haptic",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through touch (feeling with the skin or body). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_interoceptive",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through sensations inside the body (e.g., hunger, pain, heartbeat, fatigue). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_olfactory",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through smell. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_visual",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced through vision. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_foot_leg",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced by performing actions with the foot or leg. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_hand_arm",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced by performing actions with the hand or arm. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_head",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced by performing actions with the head, excluding the mouth (e.g., nodding, turning, tilting). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_mouth",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced by performing actions with the mouth or throat (e.g., speaking, chewing, swallowing). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    },
+    {
+      "n_items": 39707,
+      "n_participants": null,
+      "construct_name": "lancaster_torso",
+      "scale": {
+        "range": "0-5",
+        "anchors": {
+          "0": "not experienced at all",
+          "5": "experienced greatly"
+        }
+      },
+      "instructions_verbatim": "participants were asked to rate how much they experience everyday concepts using six perceptual senses/five action effectors ... the rating scales ran from 0 (not experienced at all with that sense/action) to 5 (experienced greatly with that sense/action); and that if participants did not know the meaning of a word, they should check the \"Don't know the meaning of this word\" box",
+      "citation": "Lynott, D., Connell, L., Brysbaert, M., Brand, J., & Carney, J. (2020). The Lancaster sensorimotor norms. Behavior Research Methods, 52, 1271-1291.",
+      "instructions_llm": "Rate how strongly the meaning of this word is experienced by performing actions with the torso (e.g., bending, twisting, posture). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number."
+    }
+  ]
+}

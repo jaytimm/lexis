@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 39954,
+      "n_participants": 4237,
+      "construct_name": "concreteness",
+      "scale": {
+        "range": "1-5",
+        "anchors": {
+          "1": "Abstract (language based)",
+          "5": "Concrete (experience based)"
+        }
+      },
+      "instructions_verbatim": "Some words refer to things or actions in reality, which you can experience directly through one of the five senses. We call these words concrete words. Other words refer to meanings that cannot be experienced directly but which we know because the meanings can be defined by other words. These are abstract words. Still other words fall in-between the two extremes, because we can experience them to some extent and in addition we rely on language to understand them. We want you to indicate how concrete the meaning of each word is for you by using a 5-point rating scale going from abstract to concrete. So, we ask you to use a 5-point rating scale going from abstract to concrete and to use the letter N when you do not know the word well enough to give an answer. Abstract (language based) 1 2 3 4 5 Concrete (experience based). N = I do not know this word well enough to give a rating.",
+      "citation": "Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40 thousand generally known English word lemmas. Frontiers in Psychology, 5, 1515.",
+      "instructions_llm": "Rate how concrete this word's meaning is. Concrete words refer to things experienced through the senses; abstract words refer to meanings defined through other words. Range: 1-5 (1 = abstract, 5 = concrete). Reply with one number."
+    }
+  ]
+}

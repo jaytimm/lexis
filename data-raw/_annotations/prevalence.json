@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 61855,
+      "n_participants": null,
+      "construct_name": "word_knowledge_proportion_pknown",
+      "scale": {
+        "range": "0-1",
+        "anchors": {
+          "0": "known by none",
+          "1": "known by all"
+        }
+      },
+      "instructions_verbatim": "For each letter string, participants had to indicate whether or not they knew the stimulus.",
+      "citation": "Brysbaert, M., Mandera, P., McCormick, S. F., & Keuleers, E. (2019). Word prevalence norms for 62,000 English lemmas. Behavior Research Methods, 51, 1583-1603.",
+      "instructions_llm": "Estimate the proportion of English speakers who know this word. Range: 0-1 (0 = almost none, 1 = almost all). Reply with one number."
+    }
+  ]
+}

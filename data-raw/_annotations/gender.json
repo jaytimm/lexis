@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 701,
+      "n_participants": null,
+      "construct_name": "gendered_word_association",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very feminine",
+          "7": "very masculine"
+        }
+      },
+      "instructions_verbatim": "Then, they were asked to rate hundred words ranging from 1 (very feminine) to 7 (very masculine).",
+      "citation": "Roberts, B. E., & Utych, S. M. (2019). Linking gender and language: Developing a database of masculine and feminine words. American Politics Research, 47, 1155-1173.",
+      "instructions_llm": "Rate the gender association of this word. Range: 1-7 (1 = very feminine, 7 = very masculine). Reply with one number."
+    }
+  ]
+}

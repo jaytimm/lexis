@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 2019,
+      "n_participants": null,
+      "construct_name": "imageability",
+      "scale": {
+        "range": "1-7 (transformed to 100-700 in released norms)",
+        "anchors": {
+          "1": "least imageable",
+          "7": "most imageable"
+        }
+      },
+      "instructions_verbatim": "The same procedure and instructions were used for imageability and age of acquisition ratings as in Gilhooly and Logie (1980)... Verbs were shown in their infinitival form ... and nouns (where appropriate) were preceded by the indefinite article.",
+      "citation": "Bird, H., Franklin, S., & Howard, D. (2001). Age of acquisition and imageability ratings for a large set of words, including verbs and function words. Behavior Research Methods, Instruments, & Computers, 33(1), 73-79.",
+      "instructions_llm": "Rate how easily this word evokes a mental image. Range: 1-7 (1 = least imageable, 7 = most imageable). Reply with one number."
+    }
+  ]
+}

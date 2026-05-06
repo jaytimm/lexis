@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 4997,
+      "n_participants": 821,
+      "construct_name": "humor",
+      "scale": {
+        "range": "1-5",
+        "anchors": {
+          "1": "humorless = not funny at all",
+          "5": "humorous = most funny"
+        }
+      },
+      "instructions_verbatim": "You will rate how you felt while reading each word. There will be approximately 200 words. The rating scale ranges from 1 (humorless = not funny at all) to 5 (humorous = most funny). At one extreme of the scale, you find the word dull or unfunny; in that case, you should give the word a rating of 1. At the other extreme of the scale, you feel the word is amusing or likely to be associated with humorous thought or language (for example, it is absurd, amusing, hilarious, playful, silly, whimsical, or laughable); in this case, you should give the word a rating of 5. The scale also allows you to describe intermediate of humor; if you feel the word is neutral (neither humorous nor humorless), select the middle of the scale (rating 3). Please work at a rapid pace and don't spend too much time thinking about each word. Rather, make your ratings based on your first and immediate reaction as you read each word.",
+      "citation": "Engelthaler, T., & Hills, T. T. (2018). Humor norms for 4,997 English words. Behavior Research Methods, 50, 1116-1124.",
+      "instructions_llm": "Rate how funny this word feels on first reading. Range: 1-5 (1 = not funny at all, 5 = very funny). Reply with one number."
+    }
+  ]
+}

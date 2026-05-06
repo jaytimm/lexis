@@ -1,0 +1,49 @@
+{
+  "constructs": [
+    {
+      "n_items": 13915,
+      "n_participants": null,
+      "construct_name": "valence",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "unhappy",
+          "9": "happy"
+        }
+      },
+      "instructions_verbatim": "The scale ranges from 1 (happy [excited; controlled]) to 9 (unhappy [calm; in control]) ... Please work at a rapid pace and don't spend too much time thinking about each word. Rather, make your ratings based on your first and immediate reaction as you read each word.",
+      "citation": "Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. Behavior Research Methods, 45, 1191-1207.",
+      "instructions_llm": "Rate the emotional valence of this word. Range: 1-9 (1 = very unhappy/negative, 9 = very happy/positive). Reply with one number."
+    },
+    {
+      "n_items": 13915,
+      "n_participants": null,
+      "construct_name": "arousal",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "calm",
+          "9": "excited"
+        }
+      },
+      "instructions_verbatim": "The scale ranges from 1 (happy [excited; controlled]) to 9 (unhappy [calm; in control]) ... Please work at a rapid pace and don't spend too much time thinking about each word. Rather, make your ratings based on your first and immediate reaction as you read each word.",
+      "citation": "Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. Behavior Research Methods, 45, 1191-1207.",
+      "instructions_llm": "Rate the emotional arousal of this word. Range: 1-9 (1 = calm, 9 = excited). Reply with one number."
+    },
+    {
+      "n_items": 13915,
+      "n_participants": null,
+      "construct_name": "dominance",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "controlled",
+          "9": "in control"
+        }
+      },
+      "instructions_verbatim": "The scale ranges from 1 (happy [excited; controlled]) to 9 (unhappy [calm; in control]) ... Please work at a rapid pace and don't spend too much time thinking about each word. Rather, make your ratings based on your first and immediate reaction as you read each word.",
+      "citation": "Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. Behavior Research Methods, 45, 1191-1207.",
+      "instructions_llm": "Rate the sense of control this word evokes. Range: 1-9 (1 = controlled/submissive, 9 = in control/dominant). Reply with one number."
+    }
+  ]
+}

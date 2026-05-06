@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 14776,
+      "n_participants": 1419,
+      "construct_name": "iconicity",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "Not iconic at all",
+          "7": "Very iconic"
+        }
+      },
+      "instructions_verbatim": "In this task you will be rating some English words on their 'iconicity.' Please read the following instructions very carefully as they are important for doing this task.\n\nSome English words sound like what they mean. These words are iconic. You might be able to guess the meaning of such a word even if you did not know English.\n\nSome words that people have rated high in iconicity are 'screech,' 'twirl,' and 'ooze' because they sound very much like what they mean.\n\nSome words that people have rated moderate in iconicity are 'porcupine,' 'glowing,' and 'steep,' because they sound somewhat like what they mean.\n\nSome words rated low in iconicity are 'menu,' 'amateur,' and 'are,' because they do not sound at all like what they mean.\n\nIn this task, you are going to rate words for how iconic they are. You will rate each word on a scale from 1 to 7. A rating of 1 indicates that the word is not at all iconic and does not at all sound like what it means. 7 indicates that the word is high in iconicity and sounds very much like what it means.\n\nIt is important that you say the word out loud to yourself, and that you think about its meaning.\n\nIf you are unsure of the meaning or the pronunciation of a word, you have the option of skipping it.\n\nTry to focus on the word meaning of the whole word, rather than decomposing it into parts. For example, when rating 'butterfly' think of the insect rather than 'butter' and 'fly,' and rate how well the whole meaning relates to the sound of the whole word 'butterfly.'\n\nPlease remember to say the word to yourself and to think about the meaning of each word.",
+      "citation": "Winter, B., Lupyan, G., Perry, L. K., Dingemanse, M., & Perlman, M. (2023). Iconicity ratings for 14,000+ English words. Behavior Research Methods.",
+      "instructions_llm": "Rate how much this word sounds like what it means - an iconic word is one whose meaning you might guess without knowing English. Range: 1-7 (1 = not iconic at all, 7 = very iconic). Reply with one number."
+    }
+  ]
+}

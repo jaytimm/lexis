@@ -79,21 +79,21 @@
 #' @source Wordset dictionary \url{https://github.com/wordset/wordset-dictionary}
 "wordset_dict"
 
-#' Participant-facing instruction text from the 13 norming datasets
+#' Construct-level instruction annotations from dataset JSON files
 #'
-#' Verbatim instruction text shown to participants in each norming study,
-#' extracted from source PDFs. One row per distinct instruction block.
+#' Aggregated from `data-raw/_annotations/*.json` with one row per construct.
+#' Includes source verbatim instruction text and a concise LLM-facing prompt.
 #'
 #' @format A tibble with columns:
 #' \describe{
-#'   \item{dataset}{character. Source dataset identifier (e.g., "aoa", "concreteness").}
-#'   \item{instruction_id}{character. Unique identifier for the instruction block.}
-#'   \item{instruction_type}{character. Type of instruction (e.g., "main", "example").}
-#'   \item{status}{character. Extraction status (e.g., "verbatim", "paraphrased").}
-#'   \item{source_pdf}{character. Filename of the source PDF.}
-#'   \item{source_pages}{character. Page range where the instruction appears.}
-#'   \item{instruction_text_verbatim}{character. Verbatim instruction text.}
-#'   \item{notes}{character. Extractor notes, if any.}
+#'   \item{dataset}{character. Dataset identifier from annotation filename.}
+#'   \item{construct_name}{character. Construct key (one row per construct).}
+#'   \item{n_items}{integer. Number of items normed for the construct.}
+#'   \item{n_participants}{integer. Number of participants, if reported.}
+#'   \item{scale_range}{character. Scale range text (e.g., "1-7").}
+#'   \item{scale_anchors}{character. JSON-encoded anchor labels for the scale.}
+#'   \item{instructions_verbatim}{character. Verbatim participant instructions.}
+#'   \item{instructions_llm}{character. Brief standardized LLM instruction text.}
 #' }
 "norming_instructions"
 

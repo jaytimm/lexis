@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 30121,
+      "n_participants": 1729,
+      "construct_name": "age_of_acquisition",
+      "scale": {
+        "range": "1-25 years",
+        "anchors": {
+          "1": "learned very early",
+          "25": "learned very late"
+        }
+      },
+      "instructions_verbatim": "For each word, the participants were asked to enter the age (in years) at which they thought they had learned the word. It was specified that by learning a word, \"we mean the age at which you would have understood that word if somebody had used it in front of you, EVEN IF YOU DID NOT use, read, or write it at the time.\" When participants did not know a word, they were asked to enter the letter \"x.\"",
+      "citation": "Kuperman, V., Stadthagen-Gonzalez, H., & Brysbaert, M. (2012). Age-of-acquisition ratings for 30,000 English words. Behavior Research Methods, 44, 978-990.",
+      "instructions_llm": "Estimate the age in years at which a typical English speaker first understands this word. Range: 1-25 (1 = learned very early, 25 = learned very late). Reply with one number."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "constructs": [
+    {
+      "n_items": 5857,
+      "n_participants": null,
+      "construct_name": "sensory_experience_rating",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "no sensory experience",
+          "7": "strong sensory experience"
+        }
+      },
+      "instructions_verbatim": "Please rate each word on a 1 to 7 scale, with 1 meaning the word evokes no sensory experience for you ... and 7 meaning the word evokes a strong sensory experience.",
+      "citation": "Juhasz, B. J., & Yap, M. J. (2013). Sensory experience ratings for over 5,000 mono- and disyllabic words. Behavior Research Methods, 45, 111-120.",
+      "instructions_llm": "Rate how strongly this word evokes any sensory experience. Range: 1-7 (1 = no sensory experience, 7 = strong sensory experience). Reply with one number."
+    }
+  ]
+}
