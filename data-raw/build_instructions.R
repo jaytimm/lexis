@@ -31,6 +31,8 @@ extract_construct_rows <- function(path) {
       n_items = x$n_items %||% NA_integer_,
       n_participants = x$n_participants %||% NA_integer_,
       scale_range = x$scale$range %||% NA_character_,
+      scale_min = as.numeric(x$scale_min %||% NA_real_),
+      scale_max = as.numeric(x$scale_max %||% NA_real_),
       scale_anchors = anchors_json,
       instructions_verbatim = x$instructions_verbatim %||% NA_character_,
       instructions_llm = x$instructions_llm %||% NA_character_

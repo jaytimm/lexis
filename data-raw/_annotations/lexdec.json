@@ -13,7 +13,9 @@
       },
       "instructions_verbatim": "In the lexical decision task (LDT), participants are presented with a string of letters (either a word or a nonword ...), and are asked to press one button if the string is a word and another button if the string is a nonword...",
       "citation": "Balota, D. A., et al. (2007). The English Lexicon Project. Behavior Research Methods, 39, 445-459.",
-      "instructions_llm": "Imagine seeing this letter string and judging whether it is a real English word as quickly and accurately as possible. Estimate the reaction time in milliseconds. Reply with one number."
+      "instructions_llm": "Imagine seeing this letter string and judging whether it is a real English word as quickly and accurately as possible. Estimate the reaction time in milliseconds. Reply with one number.",
+      "scale_min": null,
+      "scale_max": null
     },
     {
       "n_items": 40481,
@@ -28,7 +30,9 @@
       },
       "instructions_verbatim": "In the speeded naming task, participants see a visual word ... and are asked to name the word aloud as quickly and as accurately as possible.",
       "citation": "Balota, D. A., et al. (2007). The English Lexicon Project. Behavior Research Methods, 39, 445-459.",
-      "instructions_llm": "Imagine seeing this word and reading it aloud as quickly and accurately as possible. Estimate the naming latency in milliseconds. Reply with one number."
+      "instructions_llm": "Imagine seeing this word and reading it aloud as quickly and accurately as possible. Estimate the naming latency in milliseconds. Reply with one number.",
+      "scale_min": null,
+      "scale_max": null
     }
   ]
 }

@@ -13,7 +13,9 @@
       },
       "instructions_verbatim": "participants were asked to rate the degree to which the words' meaning has social relevance by describing or referring to the following: a social characteristic of a person or group of people, a social behaviour or interaction, a social role, a social space, a social institution or system, a social value or ideology, or any other socially relevant concept.",
       "citation": "Diveica, V., Pexman, P. M., & Binney, R. J. (2023). Quantifying social semantics: A novel domain-specific assessment of socialness in spoken language and its relationship with age of acquisition. Behavior Research Methods, 55, 461-473.",
-      "instructions_llm": "Rate how socially relevant this word's meaning is - does it refer to social characteristics, behaviors, roles, spaces, institutions, values, or interactions? Range: 1-7 (1 = not socially relevant, 7 = highly socially relevant). Reply with one number."
+      "instructions_llm": "Rate how socially relevant this word's meaning is - does it refer to social characteristics, behaviors, roles, spaces, institutions, values, or interactions? Range: 1-7 (1 = not socially relevant, 7 = highly socially relevant). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
     }
   ]
 }

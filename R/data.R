@@ -91,6 +91,8 @@
 #'   \item{n_items}{integer. Number of items normed for the construct.}
 #'   \item{n_participants}{integer. Number of participants, if reported.}
 #'   \item{scale_range}{character. Scale range text (e.g., "1-7").}
+#'   \item{scale_min}{numeric. Numeric lower bound of the scale, if bounded.}
+#'   \item{scale_max}{numeric. Numeric upper bound of the scale, if bounded.}
 #'   \item{scale_anchors}{character. JSON-encoded anchor labels for the scale.}
 #'   \item{instructions_verbatim}{character. Verbatim participant instructions.}
 #'   \item{instructions_llm}{character. Brief standardized LLM instruction text.}

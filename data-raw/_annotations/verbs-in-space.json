@@ -13,7 +13,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and upward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and upward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -28,7 +30,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and downward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and downward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -43,7 +47,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and vertical motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and vertical motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -58,7 +64,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and left motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and left motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -73,7 +81,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and right motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and right motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -88,7 +98,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and horizontal motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and horizontal motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -103,7 +115,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and toward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and toward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     },
     {
       "n_items": 299,
@@ -118,7 +132,9 @@
       },
       "instructions_verbatim": "Please select the pictures that you feel best represent the event described in the sentence, with your order of preference. Use 1 for the most preferred picture, 2 for the next preferred and so on. Please select a minimum of one picture for each sentence.",
       "citation": "Meteyard, L., & Vigliocco, G. (2009). Verbs in space: Axis and direction of motion norms for 299 English verbs. Behavior Research Methods, 41(2), 565-574.",
-      "instructions_llm": "Rate the strength of association between this verb and away motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number."
+      "instructions_llm": "Rate the strength of association between this verb and away motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 5
     }
   ]
 }

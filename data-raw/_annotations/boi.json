@@ -13,7 +13,9 @@
       },
       "instructions_verbatim": "The purpose of this experiment is to rate words as to the ease with which a human body can physically interact with what they represent... Your body-object interaction ratings will be made on a 1 to 7 scale. A value of 1 will indicate a low body-object interaction rating, and a value of 7 will indicate a high body-object interaction rating.",
       "citation": "Pexman, P. M., Muraki, E., Sidhu, D. M., Siakaluk, P. D., & Yap, M. J. (2019). Quantifying sensorimotor experience: Body-object interaction ratings for more than 9,000 English words. Behavior Research Methods, 51, 453-466.",
-      "instructions_llm": "Rate how easily a human body can physically interact with what this word refers to. Range: 1-7 (1 = low interaction, 7 = high interaction). Reply with one number."
+      "instructions_llm": "Rate how easily a human body can physically interact with what this word refers to. Range: 1-7 (1 = low interaction, 7 = high interaction). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
     }
   ]
 }
