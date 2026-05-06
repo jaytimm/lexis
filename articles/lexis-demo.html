@@ -115,11 +115,11 @@ words.</p>
 <p>Use <code>wide = TRUE</code> for one row per word.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lex_lookup</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dog"</span>, <span class="st">"justice"</span><span class="op">)</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 30</span></span></span>
-<span><span class="co">#&gt;   word    lemma     aoa   boi concreteness gender_femininity humor</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> dog     dog      2.8    6.4         4.85              5.22 <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> justice justice  9.47  <span style="color: #BB0000;">NA</span>           1.45              4.87  1.93</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 31</span></span></span>
+<span><span class="co">#&gt;   word    lemma     aoa   boi concreteness gender_femininity humor iconicity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> dog     dog      2.8    6.4         4.85              5.22 <span style="color: #BB0000;">NA</span>          2.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> justice justice  9.47  <span style="color: #BB0000;">NA</span>           1.45              4.87  1.93       3.2</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23 more variables: lancaster_auditory &lt;dbl&gt;, lancaster_gustatory &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_haptic &lt;dbl&gt;, lancaster_interoceptive &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_olfactory &lt;dbl&gt;, lancaster_visual &lt;dbl&gt;,</span></span></span>
@@ -151,26 +151,26 @@ words.</p>
 <p><code>lex_filter()</code> filters on numeric dimensions.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lex_filter</span><span class="op">(</span><span class="va">concreteness</span> <span class="op">&gt;</span> <span class="fl">4</span>, <span class="va">aoa</span> <span class="op">&lt;</span> <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,515 × 75</span></span></span>
-<span><span class="co">#&gt;    word   lemma    aoa   boi concreteness gender_femininity humor imageability</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> can    can     4.32  4.88         4.55             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>             416</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> man    man     3.11  5.35         4.79              6.4   2.10          620</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> people people  3.52  6.08         4.82              4.19  2.19          568</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> night  night   3.61  2.13         4.52             <span style="color: #BB0000;">NA</span>     1.92           <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> talk   talk    3.68  4.07         4.07             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>             467</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> guy    guy     4.11  5.84         4.68              5.85  2.47           <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> money  money   5.11  6.29         4.54              4.63  2.25           <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> girl   girl    4     5.52         4.85             <span style="color: #BB0000;">NA</span>     2.65           <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> father father  4.11  6.04         4.52             <span style="color: #BB0000;">NA</span>     2.44           <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> boy    boy     3.67  4.96         4.76             <span style="color: #BB0000;">NA</span>     2.59           <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,515 × 78</span></span></span>
+<span><span class="co">#&gt;    word   lemma    aoa   boi concreteness gender_femininity humor iconicity</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> can    can     4.32  4.88         4.55             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         2.6 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> man    man     3.11  5.35         4.79              6.4   2.10      3.92</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> people people  3.52  6.08         4.82              4.19  2.19      3.36</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> night  night   3.61  2.13         4.52             <span style="color: #BB0000;">NA</span>     1.92      4.55</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> talk   talk    3.68  4.07         4.07             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         4.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> guy    guy     4.11  5.84         4.68              5.85  2.47      3.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> money  money   5.11  6.29         4.54              4.63  2.25      2.7 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> girl   girl    4     5.52         4.85             <span style="color: #BB0000;">NA</span>     2.65      4.2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> father father  4.11  6.04         4.52             <span style="color: #BB0000;">NA</span>     2.44      4.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> boy    boy     3.67  4.96         4.76             <span style="color: #BB0000;">NA</span>     2.59      3   </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2,505 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 67 more variables: lancaster_auditory &lt;dbl&gt;, lancaster_gustatory &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_haptic &lt;dbl&gt;, lancaster_interoceptive &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_olfactory &lt;dbl&gt;, lancaster_visual &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_foot_leg &lt;dbl&gt;, lancaster_hand_arm &lt;dbl&gt;, lancaster_head &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_mouth &lt;dbl&gt;, lancaster_torso &lt;dbl&gt;, lexdec_rt &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lexdec_naming_rt &lt;dbl&gt;, prevalence_pknown &lt;dbl&gt;, prevalence_score &lt;dbl&gt;, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 70 more variables: imageability &lt;dbl&gt;, lancaster_auditory &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_gustatory &lt;dbl&gt;, lancaster_haptic &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_interoceptive &lt;dbl&gt;, lancaster_olfactory &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_visual &lt;dbl&gt;, lancaster_foot_leg &lt;dbl&gt;, lancaster_hand_arm &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lancaster_head &lt;dbl&gt;, lancaster_mouth &lt;dbl&gt;, lancaster_torso &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lexdec_rt &lt;dbl&gt;, lexdec_naming_rt &lt;dbl&gt;, prevalence_pknown &lt;dbl&gt;, …</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="dictionary-definitions">Dictionary definitions<a class="anchor" aria-label="anchor" href="#dictionary-definitions"></a>
