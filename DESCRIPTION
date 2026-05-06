@@ -32,7 +32,6 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown
-VignetteBuilder: knitr
 RoxygenNote: 7.3.3
 URL: https://github.com/jaytimm/lexis
 BugReports: https://github.com/jaytimm/lexis/issues
