@@ -42,21 +42,6 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/instructions-table.html">Instruction Table</a>
-    </li>
-    <li>
-      <a href="articles/lexis-demo.html">lexis Demo</a>
-    </li>
-  </ul>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -473,6 +458,267 @@
 <tr>
 <td><code>wordset_dict</code></td>
 <td>Wordset dictionary entries with definitions, POS, and examples.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="instructions-table">Instructions Table<a class="anchor" aria-label="anchor" href="#instructions-table"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="18%">
+<col width="25%">
+<col width="18%">
+<col width="18%">
+<col width="18%">
+</colgroup>
+<thead><tr>
+<th>construct-name</th>
+<th align="right">n-items</th>
+<th>scale-range</th>
+<th>scale-anchors</th>
+<th>instructions-llm</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>age_of_acquisition</td>
+<td align="right">30121</td>
+<td>1-25 years</td>
+<td>{“1”: “learned very early”, “25”: “learned very late”}</td>
+<td>Estimate the age in years at which a typical English speaker first understands this word. Range: 1-25 (1 = learned very early, 25 = learned very late). Reply with one number.</td>
+</tr>
+<tr>
+<td>arousal</td>
+<td align="right">13915</td>
+<td>1-9</td>
+<td>{“1”: “calm”, “9”: “excited”}</td>
+<td>Rate the emotional arousal of this word. Range: 1-9 (1 = calm, 9 = excited). Reply with one number.</td>
+</tr>
+<tr>
+<td>body_object_interaction</td>
+<td align="right">9348</td>
+<td>1-7</td>
+<td>{“1”: “low body-object interaction”, “7”: “high body-object interaction”}</td>
+<td>Rate how easily a human body can physically interact with what this word refers to. Range: 1-7 (1 = low interaction, 7 = high interaction). Reply with one number.</td>
+</tr>
+<tr>
+<td>concreteness</td>
+<td align="right">39954</td>
+<td>1-5</td>
+<td>{“1”: “Abstract (language based)”, “5”: “Concrete (experience based)”}</td>
+<td>Rate how concrete this word’s meaning is. Concrete words refer to things experienced through the senses; abstract words refer to meanings defined through other words. Range: 1-5 (1 = abstract, 5 = concrete). Reply with one number.</td>
+</tr>
+<tr>
+<td>dominance</td>
+<td align="right">13915</td>
+<td>1-9</td>
+<td>{“1”: “controlled”, “9”: “in control”}</td>
+<td>Rate the sense of control this word evokes. Range: 1-9 (1 = controlled/submissive, 9 = in control/dominant). Reply with one number.</td>
+</tr>
+<tr>
+<td>gendered_word_association</td>
+<td align="right">701</td>
+<td>1-7</td>
+<td>{“1”: “very feminine”, “7”: “very masculine”}</td>
+<td>Rate the gender association of this word. Range: 1-7 (1 = very feminine, 7 = very masculine). Reply with one number.</td>
+</tr>
+<tr>
+<td>humor</td>
+<td align="right">4997</td>
+<td>1-5</td>
+<td>{“1”: “humorless = not funny at all”, “5”: “humorous = most funny”}</td>
+<td>Rate how funny this word feels on first reading. Range: 1-5 (1 = not funny at all, 5 = very funny). Reply with one number.</td>
+</tr>
+<tr>
+<td>iconicity</td>
+<td align="right">14776</td>
+<td>1-7</td>
+<td>{“1”: “Not iconic at all”, “7”: “Very iconic”}</td>
+<td>Rate how much this word sounds like what it means - an iconic word is one whose meaning you might guess without knowing English. Range: 1-7 (1 = not iconic at all, 7 = very iconic). Reply with one number.</td>
+</tr>
+<tr>
+<td>imageability</td>
+<td align="right">2019</td>
+<td>1-7 (transformed to 100-700 in released norms)</td>
+<td>{“1”: “least imageable”, “7”: “most imageable”}</td>
+<td>Rate how easily this word evokes a mental image. Range: 1-7 (1 = least imageable, 7 = most imageable). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_auditory</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through hearing. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_foot_leg</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced by performing actions with the foot or leg. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_gustatory</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through taste. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_hand_arm</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced by performing actions with the hand or arm. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_haptic</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through touch (feeling with the skin or body). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_head</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced by performing actions with the head, excluding the mouth (e.g., nodding, turning, tilting). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_interoceptive</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through sensations inside the body (e.g., hunger, pain, heartbeat, fatigue). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_mouth</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced by performing actions with the mouth or throat (e.g., speaking, chewing, swallowing). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_olfactory</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through smell. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_torso</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced by performing actions with the torso (e.g., bending, twisting, posture). Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lancaster_visual</td>
+<td align="right">39707</td>
+<td>0-5</td>
+<td>{“0”: “not experienced at all”, “5”: “experienced greatly”}</td>
+<td>Rate how strongly the meaning of this word is experienced through vision. Range: 0-5 (0 = not at all, 5 = greatly). Reply with one number.</td>
+</tr>
+<tr>
+<td>lexical_decision_reaction_time</td>
+<td align="right">40481</td>
+<td>milliseconds (unbounded)</td>
+<td>{“low”: “faster responses”, “high”: “slower responses”}</td>
+<td>Imagine seeing this letter string and judging whether it is a real English word as quickly and accurately as possible. Estimate the reaction time in milliseconds. Reply with one number.</td>
+</tr>
+<tr>
+<td>sensory_experience_rating</td>
+<td align="right">5857</td>
+<td>1-7</td>
+<td>{“1”: “no sensory experience”, “7”: “strong sensory experience”}</td>
+<td>Rate how strongly this word evokes any sensory experience. Range: 1-7 (1 = no sensory experience, 7 = strong sensory experience). Reply with one number.</td>
+</tr>
+<tr>
+<td>socialness</td>
+<td align="right">8388</td>
+<td>1-7</td>
+<td>{“1”: “low social relevance”, “7”: “high social relevance”}</td>
+<td>Rate how socially relevant this word’s meaning is - does it refer to social characteristics, behaviors, roles, spaces, institutions, values, or interactions? Range: 1-7 (1 = not socially relevant, 7 = highly socially relevant). Reply with one number.</td>
+</tr>
+<tr>
+<td>speeded_naming_reaction_time</td>
+<td align="right">40481</td>
+<td>milliseconds (unbounded)</td>
+<td>{“low”: “faster responses”, “high”: “slower responses”}</td>
+<td>Imagine seeing this word and reading it aloud as quickly and accurately as possible. Estimate the naming latency in milliseconds. Reply with one number.</td>
+</tr>
+<tr>
+<td>valence</td>
+<td align="right">13915</td>
+<td>1-9</td>
+<td>{“1”: “unhappy”, “9”: “happy”}</td>
+<td>Rate the emotional valence of this word. Range: 1-9 (1 = very unhappy/negative, 9 = very happy/positive). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_away</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and away motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_dwnwrd</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and downward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_horiz</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and horizontal motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_left</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and left motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_right</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and right motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_toward</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and toward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_upwrd</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and upward motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>vis_vert</td>
+<td align="right">299</td>
+<td>1-5</td>
+<td>{“1”: “weak association”, “5”: “strong association”}</td>
+<td>Rate the strength of association between this verb and vertical motion in space. Range: 1-5 (1 = weak association, 5 = strong association). Reply with one number.</td>
+</tr>
+<tr>
+<td>word_knowledge_proportion_pknown</td>
+<td align="right">61855</td>
+<td>0-1</td>
+<td>{“0”: “known by none”, “1”: “known by all”}</td>
+<td>Estimate the proportion of English speakers who know this word. Range: 0-1 (0 = almost none, 1 = almost all). Reply with one number.</td>
 </tr>
 </tbody>
 </table>
