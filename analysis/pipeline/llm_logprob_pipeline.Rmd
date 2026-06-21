@@ -1,0 +1,546 @@
+---
+title: "LLM Norming Pipeline (logprob + integer-only)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+## Run Controls
+
+Set `model_slug` to a key in `MODELS` below. Run directories are named
+`{model_slug}_{timestamp}` (e.g. `gpt-4.1_20260601T143022`).
+
+```{r controls}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(tibble)
+  library(httr2)
+  library(purrr)
+  library(jsonlite)
+})
+
+# ── Pick model for this run ───────────────────────────────────────────────────
+model_slug <- "gpt-4o-mini"
+
+MODELS <- list(
+  "gpt-4.1" = list(
+    provider           = "openai",
+    api_model          = "gpt-4.1",
+    extraction         = "logprob",
+    api_key_env        = "OPENAI_API_KEY",
+    responses_basename = "responses_logprob",
+    temperature        = 0,
+    max_tokens         = 1L
+  ),
+  "gpt-4o-mini" = list(
+    provider           = "openai",
+    api_model          = "gpt-4o-mini",
+    extraction         = "logprob",
+    api_key_env        = "OPENAI_API_KEY",
+    responses_basename = "responses_logprob",
+    temperature        = 0,
+    max_tokens         = 1L
+  ),
+  "gpt-5.4-nano" = list(
+    provider           = "openai",
+    api_model          = "gpt-5.4-nano",
+    extraction         = "integer",
+    api_key_env        = "OPENAI_API_KEY",
+    responses_basename = "responses_integer",
+    temperature        = NULL,
+    max_tokens         = 16L
+  ),
+  "claude-haiku-4-5" = list(
+    provider           = "anthropic",
+    api_model          = "claude-haiku-4-5-20251001",
+    extraction         = "integer",
+    api_key_env        = "ANTHROPIC_API_KEY",
+    responses_basename = "responses_integer",
+    temperature        = 0,
+    max_tokens         = 16L
+  )
+)
+
+model_cfg <- MODELS[[model_slug]]
+if (is.null(model_cfg)) {
+  stop(
+    "Unknown model_slug: ", model_slug,
+    ". Choose one of: ", paste(names(MODELS), collapse = ", "),
+    call. = FALSE
+  )
+}
+
+max_words_per_task  <- 2000L
+max_active_requests <- 20L
+
+norm_samples_path     <- "../output/core_vocab_long.csv"
+instructions_rda_path <- "../../data/norming_instructions.rda"
+output_root           <- "../output/runs"
+
+# aoa (1-25): up to 20/25 tokens recoverable; model concentrates mass in practice
+# prevalence_score rescaled to 1-10 to fit within top_logprobs=20
+exclude_constructs <- c("lexical_decision_reaction_time",
+                        "speeded_naming_reaction_time")
+include_constructs <- character(0)
+```
+
+## Helpers
+
+```{r helpers}
+ensure_dir <- function(path) {
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  invisible(path)
+}
+
+read_norming_instructions <- function(path) {
+  if (!file.exists(path)) stop("File not found: ", path, call. = FALSE)
+  env <- new.env(parent = emptyenv())
+  load(path, envir = env)
+  get("norming_instructions", envir = env, inherits = FALSE)
+}
+
+build_instruction_map <- function(instructions_df) {
+  instructions_df |>
+    transmute(
+      dataset          = .data$dataset,
+      construct_name   = .data$construct_name,
+      scale_min        = .data$scale_min,
+      scale_max        = .data$scale_max,
+      instructions_llm = .data$instructions_llm
+    )
+}
+
+build_tasks <- function(instruction_map, norm_samples,
+                        include_constructs, exclude_constructs,
+                        task_suffix) {
+  tasks <- instruction_map |>
+    distinct(
+      .data$dataset, .data$construct_name,
+      .data$scale_min, .data$scale_max
+    ) |>
+    filter(!(.data$construct_name %in% exclude_constructs)) |>
+    mutate(dimension = .data$construct_name) |>
+    filter(.data$dimension %in% norm_samples$dimension)
+
+  if (length(include_constructs)) {
+    tasks <- filter(tasks, .data$construct_name %in% include_constructs)
+  }
+
+  tasks |>
+    transmute(
+      task_id   = paste0(.data$construct_name, "_", task_suffix),
+      dataset   = .data$dataset,
+      dimension = .data$dimension,
+      scale_min = .data$scale_min,
+      scale_max = .data$scale_max
+    )
+}
+
+build_prompts <- function(task_rows, norm_samples, instruction_map,
+                          max_words) {
+  bind_rows(lapply(seq_len(nrow(task_rows)), function(i) {
+    task <- as.list(task_rows[i, , drop = FALSE])
+
+    instr <- instruction_map |>
+      filter(
+        .data$dataset        == task$dataset,
+        .data$construct_name == task$dimension
+      ) |>
+      pull(.data$instructions_llm) |>
+      dplyr::first()
+
+    words <- norm_samples |>
+      filter(
+        .data$dimension == task$dimension,
+        .data$split     == "holdout"
+      ) |>
+      slice_head(n = max_words) |>
+      select("word", "score", "split")
+
+    crossing(
+      task_rows[i, c("task_id", "dataset", "dimension",
+                     "scale_min", "scale_max")],
+      words
+    ) |>
+      mutate(instruction_text = instr)
+  }))
+}
+
+empty_summary_row <- function(word, dimension, split, human_score,
+                              extraction) {
+  tibble(
+    word           = word,
+    dimension      = dimension,
+    split          = split,
+    human_score    = human_score,
+    extraction     = extraction,
+    expected       = NA_real_,
+    integer_rating = NA_integer_,
+    coverage       = NA_real_
+  )
+}
+
+parse_integer_text <- function(raw, scale_min, scale_max) {
+  raw <- trimws(raw)
+  val <- suppressWarnings(as.integer(raw))
+  if (!is.na(val) && val >= scale_min && val <= scale_max) return(val)
+
+  hits <- regmatches(raw, gregexpr("[0-9]+", raw))[[1]]
+  if (!length(hits)) return(NA_integer_)
+  vals <- as.integer(hits)
+  in_range <- vals[vals >= scale_min & vals <= scale_max]
+  if (length(in_range)) return(in_range[[1]])
+  NA_integer_
+}
+
+# ── OpenAI requests ───────────────────────────────────────────────────────────
+
+build_openai_body <- function(model_cfg, prompt) {
+  body <- list(
+    model    = model_cfg$api_model,
+    messages = list(list(role = "user", content = prompt))
+  )
+  if (!is.null(model_cfg$max_tokens)) {
+    body$max_tokens <- model_cfg$max_tokens
+  }
+  if (!is.null(model_cfg$temperature)) {
+    body$temperature <- model_cfg$temperature
+  }
+  body
+}
+
+build_openai_logprob_request <- function(word, instruction_text, model_cfg) {
+  prompt <- paste0(instruction_text, "\n\nWord: ", word)
+  body <- build_openai_body(model_cfg, prompt)
+  body$logprobs     <- TRUE
+  body$top_logprobs <- 20L
+
+  request("https://api.openai.com/v1/chat/completions") |>
+    req_auth_bearer_token(Sys.getenv(model_cfg$api_key_env)) |>
+    req_body_json(body)
+}
+
+build_openai_integer_request <- function(word, instruction_text, model_cfg) {
+  prompt <- paste0(instruction_text, "\n\nWord: ", word)
+  body <- build_openai_body(model_cfg, prompt)
+
+  request("https://api.openai.com/v1/chat/completions") |>
+    req_auth_bearer_token(Sys.getenv(model_cfg$api_key_env)) |>
+    req_body_json(body)
+}
+
+# ── Anthropic requests ────────────────────────────────────────────────────────
+
+build_anthropic_integer_request <- function(word, instruction_text, model_cfg) {
+  prompt <- paste0(instruction_text, "\n\nWord: ", word)
+  body <- list(
+    model      = model_cfg$api_model,
+    max_tokens = model_cfg$max_tokens,
+    messages   = list(list(role = "user", content = prompt))
+  )
+  if (!is.null(model_cfg$temperature)) {
+    body$temperature <- model_cfg$temperature
+  }
+
+  request("https://api.anthropic.com/v1/messages") |>
+    req_headers(
+      `x-api-key`         = Sys.getenv(model_cfg$api_key_env),
+      `anthropic-version` = "2023-06-01"
+    ) |>
+    req_body_json(body)
+}
+
+build_rating_request <- function(word, instruction_text, model_cfg) {
+  switch(
+    model_cfg$provider,
+    openai = if (identical(model_cfg$extraction, "logprob")) {
+      build_openai_logprob_request(word, instruction_text, model_cfg)
+    } else {
+      build_openai_integer_request(word, instruction_text, model_cfg)
+    },
+    anthropic = build_anthropic_integer_request(word, instruction_text, model_cfg),
+    stop("Unsupported provider: ", model_cfg$provider, call. = FALSE)
+  )
+}
+
+# ── Response parsers ──────────────────────────────────────────────────────────
+
+parse_openai_logprob_response <- function(resp, word, dimension, split,
+                                          human_score, scale_min, scale_max) {
+  valid_tokens <- as.character(seq(scale_min, scale_max))
+
+  body <- resp_body_json(resp)
+  top  <- body$choices[[1]]$logprobs$content[[1]]$top_logprobs
+  raw  <- trimws(body$choices[[1]]$message$content)
+
+  probs_raw <- map_dfr(top, function(x) {
+    tok <- trimws(x$token)
+    if (tok %in% valid_tokens) {
+      tibble(rating = as.integer(tok), prob = exp(x$logprob))
+    }
+  })
+
+  if (nrow(probs_raw) == 0) {
+    return(list(
+      summary = empty_summary_row(
+        word, dimension, split, human_score, "logprob"
+      ) |> mutate(coverage = 0),
+      distribution = tibble()
+    ))
+  }
+
+  probs <- probs_raw |>
+    group_by(.data$rating) |>
+    summarise(prob = sum(.data$prob), .groups = "drop")
+
+  coverage   <- sum(probs$prob)
+  probs$prob <- probs$prob / coverage
+
+  list(
+    summary = tibble(
+      word           = word,
+      dimension      = dimension,
+      split          = split,
+      human_score    = human_score,
+      extraction     = "logprob",
+      expected       = sum(probs$rating * probs$prob),
+      integer_rating = parse_integer_text(raw, scale_min, scale_max),
+      coverage       = coverage
+    ),
+    distribution = probs |>
+      mutate(word = word, dimension = dimension, .before = 1)
+  )
+}
+
+parse_integer_response <- function(resp, word, dimension, split,
+                                   human_score, scale_min, scale_max,
+                                   provider) {
+  body <- resp_body_json(resp)
+  raw <- switch(
+    provider,
+    openai    = body$choices[[1]]$message$content,
+    anthropic = body$content[[1]]$text,
+    stop("Unsupported provider: ", provider, call. = FALSE)
+  )
+
+  list(
+    summary = tibble(
+      word           = word,
+      dimension      = dimension,
+      split          = split,
+      human_score    = human_score,
+      extraction     = "integer",
+      expected       = NA_real_,
+      integer_rating = parse_integer_text(raw, scale_min, scale_max),
+      coverage       = NA_real_
+    ),
+    distribution = tibble()
+  )
+}
+
+parse_rating_response <- function(resp, word, dimension, split,
+                                  human_score, scale_min, scale_max,
+                                  model_cfg) {
+  if (identical(model_cfg$extraction, "logprob")) {
+    parse_openai_logprob_response(
+      resp, word, dimension, split, human_score, scale_min, scale_max
+    )
+  } else {
+    parse_integer_response(
+      resp, word, dimension, split, human_score, scale_min, scale_max,
+      model_cfg$provider
+    )
+  }
+}
+
+write_run_meta <- function(path, run_meta) {
+  writeLines(
+    jsonlite::toJSON(run_meta, auto_unbox = TRUE, pretty = TRUE),
+    path
+  )
+}
+```
+
+
+
+
+## Run Pipeline
+
+```{r run-pipeline}
+if (!file.exists(norm_samples_path))
+  stop("Missing: ", norm_samples_path, call. = FALSE)
+if (!file.exists(instructions_rda_path))
+  stop("Missing: ", instructions_rda_path, call. = FALSE)
+
+# api_key <- Sys.getenv(model_cfg$api_key_env)
+# if (!nzchar(api_key)) {
+#   stop(model_cfg$api_key_env, " not set.", call. = FALSE)
+# }
+
+task_suffix <- model_cfg$extraction
+use_logprobs <- identical(model_cfg$extraction, "logprob")
+responses_file <- paste0(model_cfg$responses_basename, ".csv")
+
+norm_samples <- read.csv(norm_samples_path, stringsAsFactors = FALSE)
+instructions <- read_norming_instructions(instructions_rda_path)
+instr_map    <- build_instruction_map(instructions)
+task_rows    <- build_tasks(
+  instr_map, norm_samples,
+  include_constructs, exclude_constructs,
+  task_suffix = task_suffix
+)
+
+if (!nrow(task_rows))
+  stop("No tasks after filtering.", call. = FALSE)
+
+prompts_df <- build_prompts(
+  task_rows, norm_samples, instr_map, max_words_per_task
+)
+
+timestamp <- format(Sys.time(), "%Y%m%dT%H%M%S")
+run_id    <- paste0(model_slug, "_", timestamp)
+now_utc   <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+run_dir   <- ensure_dir(file.path(output_root, run_id))
+tasks_dir <- ensure_dir(file.path(run_dir, "tasks"))
+
+run_meta <- list(
+  run_id             = run_id,
+  timestamp_utc      = now_utc,
+  model_slug         = model_slug,
+  api_model          = model_cfg$api_model,
+  provider           = model_cfg$provider,
+  extraction         = model_cfg$extraction,
+  responses_file     = responses_file,
+  max_words_per_task = max_words_per_task,
+  n_prompts          = nrow(prompts_df),
+  tasks              = sort(task_rows$task_id)
+)
+write_run_meta(file.path(run_dir, "run_meta.json"), run_meta)
+
+message("Run ID     : ", run_id)
+message("Model slug : ", model_slug)
+message("API model  : ", model_cfg$api_model)
+message("Extraction : ", model_cfg$extraction)
+message("Tasks      : ", paste(sort(task_rows$task_id), collapse = ", "))
+message("Prompts    : ", nrow(prompts_df))
+
+tasks <- sort(unique(prompts_df$task_id))
+
+summary_rows <- list()
+dist_rows    <- list()
+
+for (j in seq_along(tasks)) {
+  tid <- tasks[[j]]
+  message("\n[", j, "/", length(tasks), "] ", tid)
+
+  task_df <- filter(prompts_df, task_id == tid)
+  s_min   <- task_df$scale_min[[1]]
+  s_max   <- task_df$scale_max[[1]]
+
+  reqs <- map(seq_len(nrow(task_df)), function(i) {
+    build_rating_request(
+      word             = task_df$word[[i]],
+      instruction_text = task_df$instruction_text[[i]],
+      model_cfg        = model_cfg
+    )
+  })
+
+  resps <- req_perform_parallel(
+    reqs,
+    on_error   = "continue",
+    max_active = max_active_requests,
+    progress   = paste0(tid, " [", j, "/", length(tasks), "]")
+  )
+
+  parsed <- map(seq_along(resps), function(i) {
+    resp <- resps[[i]]
+    if (inherits(resp, "error")) {
+      return(list(
+        summary = empty_summary_row(
+          task_df$word[[i]], task_df$dimension[[i]],
+          task_df$split[[i]], task_df$score[[i]],
+          model_cfg$extraction
+        ) |> mutate(coverage = if (use_logprobs) 0 else NA_real_),
+        distribution = tibble()
+      ))
+    }
+    parse_rating_response(
+      resp        = resp,
+      word        = task_df$word[[i]],
+      dimension   = task_df$dimension[[i]],
+      split       = task_df$split[[i]],
+      human_score = task_df$score[[i]],
+      scale_min   = s_min,
+      scale_max   = s_max,
+      model_cfg   = model_cfg
+    )
+  })
+
+  task_summary <- bind_rows(map(parsed, "summary")) |>
+    mutate(
+      run_id        = run_id,
+      timestamp_utc = now_utc,
+      model_slug    = model_slug,
+      model         = model_cfg$api_model,
+      .before       = 1
+    )
+
+  task_dist <- bind_rows(map(parsed, "distribution")) |>
+    mutate(
+      run_id     = run_id,
+      model_slug = model_slug,
+      model      = model_cfg$api_model,
+      .before    = 1
+    )
+
+  summary_path <- file.path(tasks_dir, paste0(tid, "_summary.csv"))
+  write.csv(task_summary, summary_path, row.names = FALSE)
+
+  if (use_logprobs) {
+    dist_path <- file.path(tasks_dir, paste0(tid, "_distributions.csv"))
+    write.csv(task_dist, dist_path, row.names = FALSE)
+  }
+
+  if (use_logprobs) {
+    n_ok  <- sum(!is.na(task_summary$expected))
+    n_na  <- sum(is.na(task_summary$expected))
+    cov_m <- round(mean(task_summary$coverage, na.rm = TRUE), 3)
+    message(
+      "  done — ", n_ok, " expected, ", n_na,
+      " failed, mean coverage = ", cov_m
+    )
+  } else {
+    n_ok <- sum(!is.na(task_summary$integer_rating))
+    n_na <- sum(is.na(task_summary$integer_rating))
+    message("  done — ", n_ok, " rated, ", n_na, " failed")
+  }
+
+  summary_rows[[j]] <- task_summary
+  if (use_logprobs) dist_rows[[j]] <- task_dist
+}
+
+responses_out <- bind_rows(summary_rows)
+write.csv(
+  responses_out,
+  file.path(run_dir, responses_file),
+  row.names = FALSE
+)
+
+message("\nWrote: ", file.path(run_dir, responses_file))
+
+if (use_logprobs) {
+  dists_out <- bind_rows(dist_rows)
+  write.csv(
+    dists_out,
+    file.path(run_dir, "distributions.csv"),
+    row.names = FALSE
+  )
+  message("Wrote: ", file.path(run_dir, "distributions.csv"))
+}
+
+message("Wrote: ", file.path(run_dir, "run_meta.json"))
+message("Run complete: ", run_id)
+```
