@@ -50,15 +50,29 @@
 #' }
 "lexis_meta"
 
-#' GloVe word embeddings (50 dimensions) for the lexis vocabulary
+#' GloVe word embeddings (2014, 300 dimensions) for the lexis vocabulary
 #'
-#' A numeric matrix with one row per word and 50 columns (GloVe dimensions).
-#' Subset to words present in \code{lexis_wide}. Row names are the word forms.
+#' A numeric matrix with one row per word and 300 columns (GloVe dimensions).
+#' Subset to words present in \code{lexis_wide}, the pretrained Pennington et
+#' al. (2014) GloVe 6B vocabulary, and \code{glove2024}. Row names are the word
+#' forms; row order matches \code{glove2024}.
 #'
-#' @format A named numeric matrix: words × 50 GloVe dimensions.
+#' @format A named numeric matrix: words × 300 GloVe dimensions.
 #' @source Pennington, Socher & Manning (2014). GloVe: Global vectors for word
 #'   representation. EMNLP 2014. \url{https://nlp.stanford.edu/projects/glove/}
-"glove50"
+"glove2014"
+
+#' GloVe word embeddings (2024, 300 dimensions) for the lexis vocabulary
+#'
+#' A numeric matrix with one row per word and 300 columns (GloVe dimensions).
+#' Subset to words present in \code{lexis_wide}, the pretrained Carlson et al.
+#' (2025) GloVe vocabulary, and \code{glove2014}. Row names are the word forms;
+#' row order matches \code{glove2014}.
+#'
+#' @format A named numeric matrix: words × 300 GloVe dimensions.
+#' @source Carlson, Bauer & Manning (2025). A new pair of GloVes.
+#'   \url{https://nlp.stanford.edu/projects/glove/}
+"glove2024"
 
 #' Wordset dictionary: one row per word meaning (definition)
 #'

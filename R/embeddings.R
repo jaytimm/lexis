@@ -1,41 +1,54 @@
+.glove_matrix <- function(model = c("2024", "2014")) {
+  model <- match.arg(model)
+  switch(model,
+    "2024" = glove2024,
+    "2014" = glove2014
+  )
+}
+
 #' Get GloVe embedding vector(s) for one or more words
 #'
-#' Returns a matrix of 50-dimensional GloVe embeddings for the requested words.
-#' Words not present in \code{glove50} are silently dropped (check the row
-#' names of the result to see which words were found).
+#' Returns a matrix of 300-dimensional GloVe embeddings for the requested words.
+#' Words not present in the selected GloVe matrix are silently dropped (check the
+#' row names of the result to see which words were found).
 #'
 #' @param words character vector. One or more words (case-insensitive).
+#' @param model character. Which GloVe release to use: \code{"2024"} (default) or
+#'   \code{"2014"}.
 #'
-#' @return A numeric matrix with one row per found word and 50 columns. Row
+#' @return A numeric matrix with one row per found word and 300 columns. Row
 #'   names are the matched word forms. Returns NULL with a warning if no words
 #'   are found.
 #'
 #' @examples
 #' lex_embed("dog")
 #' lex_embed(c("king", "queen", "man", "woman"))
+#' lex_embed("dog", model = "2014")
 #'
 #' @export
-lex_embed <- function(words) {
-  words  <- tolower(trimws(words))
-  found  <- intersect(words, rownames(glove50))
+lex_embed <- function(words, model = c("2024", "2014")) {
+  mat   <- .glove_matrix(model)
+  words <- tolower(trimws(words))
+  found <- intersect(words, rownames(mat))
+  label <- paste0("glove", match.arg(model))
   if (length(found) == 0) {
-    warning("No words found in glove50.")
+    warning("No words found in ", label, ".")
     return(NULL)
   }
   if (length(found) < length(words)) {
     missing <- setdiff(words, found)
-    warning(length(missing), " word(s) not in glove50: ",
+    warning(length(missing), " word(s) not in ", label, ": ",
             paste(head(missing, 5), collapse = ", "),
             if (length(missing) > 5) "..." else "")
   }
-  glove50[found, , drop = FALSE]
+  mat[found, , drop = FALSE]
 }
 
 #' Find nearest embedding neighbors for a target word
 #'
 #' Computes cosine similarity between a target word's GloVe vector and all
-#' other words in \code{glove50} (or a subset), returning the top-N most
-#' similar words.
+#' other words in the selected GloVe matrix (or a subset), returning the top-N
+#' most similar words.
 #'
 #' @param word character. A single target word.
 #' @param n integer. Number of nearest neighbors to return (default 10).
@@ -43,6 +56,8 @@ lex_embed <- function(words) {
 #' @param candidates character vector or NULL. If not NULL, restrict the search
 #'   to this set of words. Useful for finding neighbors among normed words only
 #'   (e.g., \code{candidates = lexis_wide$word}).
+#' @param model character. Which GloVe release to use: \code{"2024"} (default) or
+#'   \code{"2014"}.
 #'
 #' @return A tibble with columns: word, similarity (cosine, higher = more
 #'   similar). Sorted descending by similarity.
@@ -52,22 +67,24 @@ lex_embed <- function(words) {
 #' lex_neighbors("run", n = 20, candidates = lexis_wide$word)
 #'
 #' @export
-lex_neighbors <- function(word, n = 10, candidates = NULL) {
+lex_neighbors <- function(word, n = 10, candidates = NULL, model = c("2024", "2014")) {
+  mat  <- .glove_matrix(model)
   word <- tolower(trimws(word))
-  if (!word %in% rownames(glove50)) {
-    stop("'", word, "' not found in glove50.")
+  label <- paste0("glove", match.arg(model))
+  if (!word %in% rownames(mat)) {
+    stop("'", word, "' not found in ", label, ".")
   }
 
   search_mat <- if (!is.null(candidates)) {
-    cands <- intersect(tolower(candidates), rownames(glove50))
+    cands <- intersect(tolower(candidates), rownames(mat))
     cands <- setdiff(cands, word)
-    glove50[cands, , drop = FALSE]
+    mat[cands, , drop = FALSE]
   } else {
-    glove50[setdiff(rownames(glove50), word), , drop = FALSE]
+    mat[setdiff(rownames(mat), word), , drop = FALSE]
   }
 
-  target  <- glove50[word, , drop = FALSE]
-  sims    <- .cosine_sim(target, search_mat)
+  target   <- mat[word, , drop = FALSE]
+  sims     <- .cosine_sim(target, search_mat)
   sim_vals <- as.numeric(sims[1, ])
   sim_words <- colnames(sims)
 

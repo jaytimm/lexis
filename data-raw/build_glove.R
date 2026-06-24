@@ -1,7 +1,7 @@
 # data-raw/build_glove.R
-# Reads the 2024 GloVe text files (50d and 300d), subsets to words present in
-# lexis_wide, and saves named numeric matrices as data/glove50.rda and
-# data/glove300.rda.
+# Reads 2014 and 2024 GloVe 300d text files, subsets to words present in
+# lexis_wide, then keeps only words present in both releases. Saves named
+# numeric matrices as data/glove2014.rda and data/glove2024.rda.
 
 library(dplyr)
 library(readr)
@@ -71,15 +71,15 @@ read_glove_txt <- function(glove_txt, ndim, norms_vocab) {
   })
 
   readr::read_lines_chunked(
-    file      = glove_txt,
-    callback  = chunk_cb,
+    file       = glove_txt,
+    callback   = chunk_cb,
     chunk_size = chunk_size,
-    progress  = TRUE
+    progress   = TRUE
   )
 
   if (!length(kept_vals)) stop("No overlap found between norms vocabulary and GloVe rows.")
 
-  mat_raw          <- do.call(rbind, kept_vals)
+  mat_raw           <- do.call(rbind, kept_vals)
   rownames(mat_raw) <- kept_words
   colnames(mat_raw) <- paste0("V", seq_len(ndim))
 
@@ -106,17 +106,42 @@ if (!file.exists(lexis_rds)) {
 lexis_wide  <- readRDS(lexis_rds)
 norms_vocab <- unique(tolower(lexis_wide$word))
 
-txt50  <- file.path(embed_dir, "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt")
-txt300 <- file.path(embed_dir, "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt")
+glove_sources <- list(
+  glove2014 = list(
+    path = file.path(embed_dir, "2014", "glove.6B.300d.txt"),
+    ndim = 300L
+  ),
+  glove2024 = list(
+    path = file.path(embed_dir, "2024", "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt"),
+    ndim = 300L
+  )
+)
 
-if (!file.exists(txt50))  stop("50d file not found: ",  txt50)
-if (!file.exists(txt300)) stop("300d file not found: ", txt300)
+mats <- list()
+for (obj_name in names(glove_sources)) {
+  src <- glove_sources[[obj_name]]
+  if (!file.exists(src$path)) {
+    stop(obj_name, " file not found: ", src$path, call. = FALSE)
+  }
+  message("\n=== Building ", obj_name, " ===")
+  mats[[obj_name]] <- read_glove_txt(src$path, src$ndim, norms_vocab)
+}
 
-glove50  <- read_glove_txt(txt50,  50L,  norms_vocab)
-glove300 <- read_glove_txt(txt300, 300L, norms_vocab)
+common_words <- Reduce(intersect, lapply(mats, rownames))
+if (!length(common_words)) {
+  stop("No words overlap between GloVe 2014 and 2024 after lexis filtering.", call. = FALSE)
+}
 
-save(glove50,  file = file.path(base_dir, "data/glove50.rda"),  compress = "xz")
-save(glove300, file = file.path(base_dir, "data/glove300.rda"), compress = "xz")
-
-message("Saved glove50  (", nrow(glove50),  " words x 50 dims)")
-message("Saved glove300 (", nrow(glove300), " words x 300 dims)")
+message(
+  "\n=== Restricting to 2014/2024 intersection (", length(common_words), " words) ==="
+)
+for (obj_name in names(mats)) {
+  before <- nrow(mats[[obj_name]])
+  assign(obj_name, mats[[obj_name]][common_words, , drop = FALSE])
+  out <- file.path(base_dir, "data", paste0(obj_name, ".rda"))
+  save(list = obj_name, file = out, compress = "xz")
+  message(
+    "Saved ", obj_name, " (", nrow(get(obj_name)), " words x ", ncol(get(obj_name)),
+    " dims; dropped ", before - length(common_words), ")"
+  )
+}

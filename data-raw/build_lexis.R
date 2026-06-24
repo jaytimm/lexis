@@ -381,51 +381,6 @@ vis_long <- map_dfr(vis_composite_dims, function(d) {
     )
 })
 
-## 1n. Wordset definition counts (requires data-raw/build_wordset.R to have been run) ──
-# n_defs = total definitions across all POS for a word.
-# n_pos  = number of distinct parts of speech attested for a word.
-# ws_pos = semicolon-separated POS list retained as reference metadata.
-wordset_index_path <- file.path(
-  base_dir, "datasets/xother/wordset-dictionary/wordset_index.rds"
-)
-if (!file.exists(wordset_index_path)) {
-  stop("wordset_index.rds not found — run data-raw/build_wordset.R first.")
-}
-wordset_index_raw <- readRDS(wordset_index_path)
-
-if (all(c("n_defs", "n_pos", "pos") %in% names(wordset_index_raw))) {
-  # New schema: one row per word already contains totals.
-  wordset_ndefs <- wordset_index_raw |>
-    transmute(
-      word = tolower(trimws(word)),
-      total_defs = as.numeric(n_defs),
-      total_pos = as.numeric(n_pos),
-      pos_list = pos
-    )
-} else {
-  # Backward compatibility for older schema (one row per word/POS).
-  wordset_ndefs <- wordset_index_raw |>
-    group_by(word = tolower(trimws(word))) |>
-    summarise(
-      total_defs = sum(n_defs),
-      total_pos  = n_distinct(pos),
-      pos_list   = {
-        vals <- sort(unique(stats::na.omit(pos)))
-        if (length(vals) == 0) NA_character_ else paste(vals, collapse = ";")
-      },
-      .groups = "drop"
-    )
-}
-
-ws_ndefs <- wordset_ndefs |>
-  transmute(word, dataset = "wordset", dimension = "n_defs",
-            mean = as.numeric(total_defs), sd = NA_real_,
-            n_ratings = NA_integer_, scale_min = NA_real_, scale_max = NA_real_)
-
-ws_npos <- wordset_ndefs |>
-  transmute(word, dataset = "wordset", dimension = "n_pos",
-            mean = as.numeric(total_pos), sd = NA_real_,
-            n_ratings = NA_integer_, scale_min = NA_real_, scale_max = NA_real_)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -451,9 +406,7 @@ lexis_long <- bind_rows(
   vad_valence   |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   vad_arousal   |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
   vad_dominance |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
-  vis_long |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
-  ws_ndefs,
-  ws_npos
+  vis_long |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
 ) |>
   mutate(
     word      = tolower(trimws(word)),
@@ -593,11 +546,24 @@ lexis_wide <- lexis_wide |>
   left_join(lanc_supp,   by = "word") |>
   left_join(vis_supp,    by = "word") |>
   left_join(img_supp,       by = "word") |>
-  left_join(iconicity_supp, by = "word") |>
-  left_join(
-    wordset_ndefs |> rename(ws_n_defs = total_defs, ws_n_pos = total_pos, ws_pos = pos_list),
-    by = "word"
-  )
+  left_join(iconicity_supp, by = "word")
+
+# WordNet sense counts — optional; requires build_wordnet.py to have run first.
+wordnet_counts_path <- file.path(base_dir, "data-raw/_build/wordnet_defs.csv")
+if (file.exists(wordnet_counts_path)) {
+  wordnet_counts <- read_csv(
+    wordnet_counts_path,
+    col_types = cols(.default = col_guess()),
+    show_col_types = FALSE
+  ) |>
+    select(word, wn_n_synsets, wn_n_noun, wn_n_verb, wn_n_adj, wn_n_adv) |>
+    mutate(word = tolower(trimws(word)))
+  lexis_wide <- lexis_wide |>
+    left_join(wordnet_counts, by = "word")
+  message("WordNet counts joined: ", nrow(wordnet_counts), " words")
+} else {
+  message("WordNet counts not found (run data-raw/build_wordnet.py); wn_* columns omitted.")
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SECTION 4: METADATA DATAFRAME
@@ -789,25 +755,15 @@ lexis_meta <- tribble(
   "Participants were asked to rate how much each word 'sounds like what it means' on a scale from 1 (the word does not sound like what it means at all) to 7 (the word very much sounds like what it means). A 'don't know' response option was available; such responses were excluded from the mean.",
   "Winter, Lupyan, Perry, Dingemanse & Perlman (2023). Behav Res Methods.",
 
-  "glove50", "glove", "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt", "50-dim dense vector (continuous)", FALSE,
-  "Dense distributional semantic embedding vector (50 dimensions) from 2024 GloVe trained on Wikipedia + Gigaword. Each row in `glove50` is a word representation where geometric proximity reflects semantic relatedness.",
+  "glove2014", "glove", "glove.6B.300d.txt", "300-dim dense vector (continuous)", FALSE,
+  "Dense distributional semantic embedding vector (300 dimensions) from Pennington et al. (2014) GloVe trained on Wikipedia 2014 + Gigaword 5. Each row in `glove2014` is a word representation where geometric proximity reflects semantic relatedness.",
   "Not a participant rating. Pretrained embedding vectors downloaded from the Stanford GloVe project page and subset to words present in lexis vocabulary.",
   "Pennington, Socher & Manning (2014). EMNLP, 1532-1543. https://nlp.stanford.edu/projects/glove/",
 
-  "glove300", "glove", "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt", "300-dim dense vector (continuous)", FALSE,
-  "Dense distributional semantic embedding vector (300 dimensions) from 2024 GloVe trained on Wikipedia + Gigaword. Each row in `glove300` is a word representation where geometric proximity reflects semantic relatedness.",
+  "glove2024", "glove", "wiki_giga_2024_300_MFT20_vectors_seed_2024_alpha_0.75_eta_0.05_combined.txt", "300-dim dense vector (continuous)", FALSE,
+  "Dense distributional semantic embedding vector (300 dimensions) from Carlson et al. (2025) GloVe trained on Wikipedia + Gigaword. Each row in `glove2024` is a word representation where geometric proximity reflects semantic relatedness.",
   "Not a participant rating. Pretrained embedding vectors downloaded from the Stanford GloVe project page and subset to words present in lexis vocabulary.",
-  "Pennington, Socher & Manning (2014). EMNLP, 1532-1543. https://nlp.stanford.edu/projects/glove/",
-
-  "n_defs", "wordset", "n_defs (computed)", "count (unbounded)", FALSE,
-  "Total number of definitions listed for a word across all parts of speech in the Wordset open English dictionary. A proxy for semantic richness and polysemy — words with more definitions tend to be more frequent, more concrete, and earlier acquired.",
-  "Not a participant rating. Derived by summing n_defs across all POS entries per word in wordset_index.",
-  "Wordset dictionary (github.com/wordset/wordset-dictionary).",
-
-  "n_pos", "wordset", "n_pos (computed)", "count (unbounded)", FALSE,
-  "Number of distinct parts of speech under which a word is listed in the Wordset dictionary. Reflects grammatical flexibility and is related to semantic ambiguity and frequency.",
-  "Not a participant rating. Derived by counting distinct POS entries per word in wordset_index.",
-  "Wordset dictionary (github.com/wordset/wordset-dictionary)."
+  "Carlson, Bauer & Manning (2025). A new pair of GloVes. https://nlp.stanford.edu/projects/glove/",
 
 )
 

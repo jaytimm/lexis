@@ -4,11 +4,13 @@
 *.csv
 /data-raw/raw/
 datasets/xother/glove-embeddings/
-data-raw/rds/glove50d.rds
-data/glove300.rda
+data/glove2014.rda
+data/glove2024.rda
 datasets/xother/wordset-dictionary/jsons/
 
 analysis/
+data-raw/_build/
 docs/
 
 claude.md
+.venv-bge/

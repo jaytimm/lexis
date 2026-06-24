@@ -3,7 +3,7 @@
     {
       "n_items": 30121,
       "n_participants": 1729,
-      "construct_name": "age_of_acquisition",
+      "construct_name": "aoa",
       "scale": {
         "range": "1-25 years",
         "anchors": {

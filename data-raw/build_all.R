@@ -80,12 +80,12 @@ save_rda("lexis_wide",    required_rds[["lexis_wide"]])
 save_rda("lexis_meta",    required_rds[["lexis_meta"]])
 save_rda("wordset_dict",  required_rds[["wordset_dict"]])
 
-glove_path <- file.path(data_dir, "glove50.rda")
+glove_path <- file.path(data_dir, "glove2024.rda")
 if (file.exists(glove_path)) {
-  message("glove50.rda present: ", round(file.size(glove_path) / 1e6, 1), " MB")
+  message("glove2024.rda present: ", round(file.size(glove_path) / 1e6, 1), " MB")
 } else {
   warning(
-    "data/glove50.rda not found; run data-raw/build_glove.R after data-raw/_build/lexis_wide.rds exists.",
+    "data/glove2024.rda not found; run data-raw/build_glove.R after data-raw/_build/lexis_wide.rds exists.",
     call. = FALSE
   )
 }

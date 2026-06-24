@@ -16,6 +16,23 @@
       "instructions_llm": "Estimate the proportion of English speakers who know this word. Range: 0-1 (0 = almost none, 1 = almost all). Reply with one number.",
       "scale_min": 0,
       "scale_max": 1
+    },
+    {
+      "n_items": 61855,
+      "n_participants": null,
+      "construct_name": "prevalence_score",
+      "scale": {
+        "range": "0-100",
+        "anchors": {
+          "0": "known by almost no one",
+          "100": "known by almost everyone"
+        }
+      },
+      "instructions_verbatim": "For each letter string, participants had to indicate whether or not they knew the stimulus. Pknown is the proportion of participants who responded yes (0-1). Human scores here are the probit-transformed z-score of Pknown.",
+      "citation": "Brysbaert, M., Mandera, P., McCormick, S. F., & Keuleers, E. (2019). Word prevalence norms for 62,000 English lemmas. Behavior Research Methods, 51, 1583-1603.",
+      "instructions_llm": "Estimate what percentage of English speakers know this word (0 = almost nobody, 100 = almost everyone). Reply with one integer.",
+      "scale_min": 0,
+      "scale_max": 100
     }
   ]
 }
