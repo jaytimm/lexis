@@ -23,7 +23,7 @@ A tibble with columns:
 }
 }
 \source{
-Transcribed from \code{analysis/norming_participants.md}; see
+Transcribed from \code{data-raw/norming_participants.md}; see
   \code{lexis_meta$citation} for full references.
 }
 \usage{

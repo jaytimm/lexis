@@ -97,7 +97,7 @@
 #'     (e.g., "US MTurk", "UK Prolific", "US university").}
 #'   \item{pay}{character. Compensation, where reported.}
 #' }
-#' @source Transcribed from \code{analysis/norming_participants.md}; see
+#' @source Transcribed from \code{data-raw/norming_participants.md}; see
 #'   \code{lexis_meta$citation} for full references.
 "lexis_datasets"
 

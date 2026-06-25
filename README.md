@@ -1,6 +1,6 @@
 # lexis
 
-`lexis` is an R data package that collates English psycholinguistic rating norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. `lexis_long` holds rater-averaged rating norms only — each with per-item standard deviations and rater counts — while lexical covariates (lexical-decision and naming latencies, word frequencies, WordNet sense counts) and GloVe word embeddings sit alongside in `lexis_wide`. Per-study participant provenance is recorded in `lexis_datasets`, and citations and construct notes are kept beside the data.
+`lexis` is an R data package that collates English psycholinguistic rating norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into long and wide tables. `lexis_long` holds rater-averaged rating norms only — each with per-item standard deviations and rater counts — while lexical covariates (lexical-decision and naming latencies, word frequencies, WordNet sense counts) sit alongside in `lexis_wide`. GloVe word embeddings are provided separately as `glove2014` and `glove2024`. Per-study participant details are recorded in `lexis_datasets`, and citations and construct notes are kept beside the data.
 
 ## Install
 
@@ -212,7 +212,7 @@ Carlson, R., Bauer, J., & Manning, C. D. (2025). A New Pair of GloVes. arXiv:250
 
 | Object | Description |
 |---|---|
-| `lexis_long` | Tidy long-format table of rater-averaged rating norms: one row per word–dimension observation. Columns: `word`, `lemma`, `dataset`, `dimension`, `mean`, `sd`, `n_ratings`, `scale_min`, `scale_max`. |
+| `lexis_long` | Long-format table of rater-averaged rating norms: one row per word–dimension observation. Columns: `word`, `lemma`, `dataset`, `dimension`, `mean`, `sd`, `n_ratings`, `scale_min`, `scale_max`. |
 | `lexis_wide` | Wide-format table: one row per word (vocabulary defined by `lexis_long`), one column per norm dimension, plus appended lexical-covariate columns (lexical-decision/naming RTs, word frequencies, WordNet sense counts). |
 | `lexis_meta` | Metadata table: one row per rating-norm dimension, with construct description, scale, source column, SD availability, and citation. |
 | `lexis_datasets` | Per-study provenance: one row per source study, with citation, word/participant counts, recruitment platform, age, country, and rater population. |

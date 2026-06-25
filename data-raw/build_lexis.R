@@ -356,19 +356,33 @@ lexis_long <- bind_rows(
     sd        = as.numeric(sd),
     n_ratings = as.integer(n_ratings)
   ) |>
-  filter(!is.na(word), word != "", !grepl(" ", word))
+  filter(!is.na(word), word != "")
+
+# Kill duplicate (word, dimension) pairs outright. These are case-collision
+# artifacts from tolower() (e.g. Warriner "AIDS" vs "aids", "Pope" vs "pope")
+# that conflate genuinely distinct stimuli. We drop every colliding row rather
+# than average or arbitrarily pick one — fabricate nothing.
+dup_pairs <- lexis_long |>
+  count(word, dimension) |>
+  filter(n > 1)
+if (nrow(dup_pairs)) {
+  message("Dropping ", nrow(dup_pairs),
+          " case-collision (word, dimension) pair(s) from lexis_long.")
+  lexis_long <- lexis_long |>
+    anti_join(dup_pairs, by = c("word", "dimension"))
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SECTION 3: WIDE-FORMAT DATAFRAME
 # ─────────────────────────────────────────────────────────────────────────────
 
-# 3a. Core wide from long (mean only)
+# 3a. Core wide from long (mean only). Keys are unique by construction (dupes
+# killed above), so no values_fn is needed.
 lexis_wide <- lexis_long |>
   select(word, dimension, mean) |>
   pivot_wider(
     names_from  = dimension,
-    values_from = mean,
-    values_fn   = mean  # resolves rare true duplicates by averaging
+    values_from = mean
   )
 
 # 3b. Non-norm covariate columns joined to wide (not part of lexis_long)
