@@ -24,16 +24,11 @@
 #   (imageability, sensory experience, verbs-in-space) are excluded entirely.
 #   Behavioural/corpus-derived measures are NOT norms and live in lexis_wide as
 #   covariates only: lexdec RTs (lexdec_rt, lexdec_naming_rt), SUBTLEX-US Zipf
-#   frequency (freq_zipf_us), wordfreq Zipf (wf_zipf), and WordNet sense counts
+#   frequency (subtlex_us_zipf), wordfreq Zipf (wordfreq_en_zipf), and WordNet sense counts
 #   (wn_*). lexis_datasets carries per-study participant provenance.
 #
-# Gender (Roberts & Utych, 2019):
-#   Scale 1–7 where higher = more feminine (1 = masculine, 7 = feminine).
-#   'valence', 'arousal', 'dom' columns present in the XLSX but entirely NA — dropped.
-#   'mean-a' is the combined-sex overall mean, used as primary dimension.
-#
 # Prevalence (Brysbaert et al., 2019):
-#   Only FreqZipfUS is retained, as the freq_zipf_us covariate in wide. The
+#   Only FreqZipfUS is retained, as the subtlex_us_zipf covariate in wide. The
 #   Pknown and Prevalence scores are dropped (not rating norms).
 #
 # Lexical Decision / English Lexicon Project (Balota et al., 2007):
@@ -146,19 +141,6 @@ conc <- conc_raw |>
          scale_min = 1, scale_max = 5) |>
   select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
 
-## 1d. Gender — Roberts & Utych (2019) ────────────────────────────────────────
-# Scale: 1 (masculine) to 7 (feminine). 'mean-a' = combined-sex overall mean.
-# FLAGGED: 'valence', 'arousal', 'dom' columns are entirely NA — dropped.
-gender_raw <- read_excel(
-  file.path(base_dir, "datasets/gender/appendix_-_word_rating_file.xlsx")
-)
-
-gender <- gender_raw |>
-  rename(word = Word, mean = `mean-a`, sd = `std.dev-a`, n_ratings = `n-all`) |>
-  mutate(dataset = "gender", dimension = "gender_femininity",
-         scale_min = 1, scale_max = 7) |>
-  select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max)
-
 ## 1e. Humor — Engelthaler & Hills (2018) ─────────────────────────────────────
 # Scale: 1 (not at all funny) to 5 (very funny).
 humor_raw <- read_csv(
@@ -220,7 +202,7 @@ lex_raw <- read_csv(
 )
 
 ## 1i. Word Prevalence — Brysbaert et al. (2019) ───────────────────────────────
-# Only FreqZipfUS (SUBTLEX-US Zipf frequency) is retained, as the freq_zipf_us
+# Only FreqZipfUS (SUBTLEX-US Zipf frequency) is retained, as the subtlex_us_zipf
 # covariate in lexis_wide. The Pknown and Prevalence scores are not included.
 prev_raw <- read_excel(
   file.path(base_dir, "datasets/prevalence/13428_2018_1077_MOESM2_ESM.xlsx")
@@ -290,7 +272,7 @@ vad_dominance <- vad_raw |>
 # with the US-rated valence/concreteness/etc. norms. Scales: valence, arousal,
 # dominance are 1–9; the rest are 1–7. Note Glasgow AoA is a 1–7 band rating
 # (not years, unlike the Kuperman `aoa` norm), and Glasgow gender runs
-# 1 = feminine to 7 = masculine (the reverse of `gender_femininity`).
+# 1 = feminine to 7 = masculine.
 glasgow_cols <- c(
   "word", "length",
   "arou_m","arou_sd","arou_n", "val_m","val_sd","val_n", "dom_m","dom_sd","dom_n",
@@ -340,7 +322,6 @@ lexis_long <- bind_rows(
   aoa,
   boi,
   conc,
-  gender,
   humor,
   iconicity,
   lanc_long |> select(word, dataset, dimension, mean, sd, n_ratings, scale_min, scale_max),
@@ -396,8 +377,8 @@ lexdec_supp <- lex_raw |>
 
 # SUBTLEX-US Zipf frequency from the Brysbaert et al. (2019) prevalence release.
 freq_supp <- prev_raw |>
-  transmute(word         = tolower(trimws(Word)),
-            freq_zipf_us = FreqZipfUS)
+  transmute(word            = tolower(trimws(Word)),
+            subtlex_us_zipf = FreqZipfUS)
 
 collapse_supp <- function(x) {
   x |>
@@ -453,14 +434,14 @@ if (file.exists(wordfreq_path)) {
     show_col_types = FALSE
   ) |>
     mutate(
-      word    = tolower(trimws(word)),
-      wf_zipf = if_else(wf_zipf == 0, NA_real_, wf_zipf)
+      word             = tolower(trimws(word)),
+      wordfreq_en_zipf = if_else(wordfreq_en_zipf == 0, NA_real_, wordfreq_en_zipf)
     )
   lexis_wide <- lexis_wide |>
     left_join(wordfreq_vals, by = "word")
-  message("wordfreq Zipf joined: ", sum(!is.na(wordfreq_vals$wf_zipf)), " words with non-zero frequency")
+  message("wordfreq Zipf joined: ", sum(!is.na(wordfreq_vals$wordfreq_en_zipf)), " words with non-zero frequency")
 } else {
-  message("wordfreq output not found (run data-raw/build_wordfreq.py); wf_zipf column omitted.")
+  message("wordfreq output not found (run data-raw/build_wordfreq.py); wordfreq_en_zipf column omitted.")
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -487,11 +468,6 @@ lexis_meta <- tribble(
   "Concreteness captures the degree to which a word's meaning refers to a perceptible, experience-based entity (concrete) versus an abstract concept known only through language and definition. Concrete words can be experienced directly through the five senses and motor actions; abstract words depend on language-based meaning.",
   "'Some words refer to things or actions in reality, which you can experience directly through one of the five senses. We call these words concrete. Other words refer to meanings that cannot be experienced directly but which we know because the meanings can be defined by other words. These are abstract words.' Participants rated each word from 1 (abstract, language-based) to 5 (concrete, experience-based); N indicated the word was unknown.",
   "Brysbaert, Warriner & Kuperman (2014). Front Psychol, 5, 1515.",
-
-  "gender_femininity", "gender", "mean-a", "1–7 (1=masc, 7=fem)", TRUE,
-  "The perceived gender connotation of a word, reflecting the degree to which it is associated with masculinity or femininity in American political and cultural discourse. Higher scores indicate greater perceived femininity; lower scores indicate greater perceived masculinity.",
-  "Participants rated each word on a 7-point scale from 'very masculine' (1) to 'very feminine' (7), reflecting their perception of the gender associations of the word's meaning.",
-  "Roberts & Utych (2019). Am Polit Res, 47, 1155–1173.",
 
   "humor", "humor", "mean", "1–5", TRUE,
   "The perceived funniness of individual English words, reflecting the degree to which a word is experienced as amusing, absurd, or otherwise associated with humorous thought and language. Humor ratings are largely independent of valence, arousal, and concreteness, suggesting humor is a distinct lexical dimension.",
@@ -619,7 +595,7 @@ lexis_meta <- tribble(
   "Scott, Keitel, Becirspahic, Yao & Sereno (2019). Behav Res Methods, 51, 1258–1270.",
 
   "glasgow_gender", "glasgow", "GEND", "1–7 (1=fem, 7=masc)", TRUE,
-  "Perceived gender association of the word (UK rater pool). Runs 1 = feminine to 7 = masculine — the reverse of the `gender_femininity` norm (Roberts & Utych), where higher = more feminine.",
+  "Perceived gender association of the word (UK rater pool). Runs 1 = feminine to 7 = masculine.",
   "Participants rated the word's gender association from 1 (very feminine) to 7 (very masculine).",
   "Scott, Keitel, Becirspahic, Yao & Sereno (2019). Behav Res Methods, 51, 1258–1270.",
 
@@ -638,7 +614,6 @@ lexis_datasets <- tribble(
   "aoa",            "Kuperman, Stadthagen-Gonzalez & Brysbaert", 2012L, 30121L,  1960L,                     1729L,                 "Amazon Mechanical Turk",                   "15–82; ~47% aged 20–29",      "USA",           "US MTurk",               "$1.81/list",
   "boi",            "Pexman, Muraki, Sidhu, Siakaluk & Yap",     2019L, 9161L,   1258L,                     743L,                  "Amazon Mechanical Turk",                   "M = 37.4 (SD 11.1)",          "USA (assumed)", "MTurk (assumed US)",     "$2/list",
   "concreteness",   "Brysbaert, Warriner & Kuperman",            2014L, 37058L,  NA_integer_,               4237L,                 "Amazon Mechanical Turk",                   "36% aged 17–25; 57% female",  "USA",           "US MTurk",               "$0.75/list",
-  "gender",         "Roberts & Utych",                           2019L, 700L,    NA_integer_,               175L,                  "Amazon Mechanical Turk",                   "not reported",                "USA (assumed)", "MTurk (assumed US)",     "$1/task",
   "glasgow",        "Scott, Keitel, Becirspahic, Yao & Sereno",  2019L, 5553L,   NA_integer_,               829L,                  "University of Glasgow online platform",    "M = 21.7 (SD 7.4); 16–73",    "UK",            "UK university",          "£6/h or credit",
   "humor",          "Engelthaler & Hills",                       2018L, 4997L,   950L,                      821L,                  "Amazon Mechanical Turk",                   "M = 35.4 (SD 11.7); 18–78",   "USA (assumed)", "MTurk (assumed US)",     "$1/task",
   "iconicity",      "Winter, Lupyan, Perry, Dingemanse & Perlman",2023L, 14776L,  NA_integer_,               1419L,                 "55% MTurk; 43% UW-Madison pool",           "M = 30 (SD 14); 18–88",       "USA",           "US (MTurk + university)","$0.60/set; credit",

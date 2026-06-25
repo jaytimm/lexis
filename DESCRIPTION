@@ -2,9 +2,9 @@ Package: lexis
 Title: English Psycholinguistic Norms in a Unified Tidy Resource
 Version: 0.1.0
 Authors@R: person("Jay", "Timm", email = "jay.timm01@gmail.com", role = c("aut", "cre"))
-Description: Compiles ten English psycholinguistic rating-norm datasets (age of
+Description: Compiles nine English psycholinguistic rating-norm datasets (age of
     acquisition, concreteness, valence/arousal/dominance, body-object interaction,
-    humor, socialness, Lancaster sensorimotor norms, gender connotation, iconicity,
+    humor, socialness, Lancaster sensorimotor norms, iconicity,
     and the multi-dimension Glasgow Norms) as a tidy resource of rater-averaged norms,
     each with per-item standard deviations and rater counts. Lexical covariates
     (lexical-decision and naming latencies, SUBTLEX-US and wordfreq word frequencies,

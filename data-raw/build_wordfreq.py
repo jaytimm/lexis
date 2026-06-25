@@ -55,13 +55,13 @@ for word in words:
     zf = zipf_frequency(word, "en", wordlist="large")
     if zf == 0.0:
         n_zero += 1
-    rows.append({"word": word, "wf_zipf": zf})
+    rows.append({"word": word, "wordfreq_en_zipf": zf})
 
 # ── write output ───────────────────────────────────────────────────────────────
 os.makedirs(build_dir, exist_ok=True)
 
 with open(output_csv, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=["word", "wf_zipf"])
+    writer = csv.DictWriter(f, fieldnames=["word", "wordfreq_en_zipf"])
     writer.writeheader()
     writer.writerows(rows)
 

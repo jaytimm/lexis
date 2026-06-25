@@ -37,9 +37,9 @@
 #'   \item{lexdec_rt, lexdec_naming_rt}{numeric. Mean lexical-decision and
 #'     speeded-naming reaction times (ms) from the English Lexicon Project
 #'     (Balota et al., 2007). NA outside the ELP vocabulary.}
-#'   \item{freq_zipf_us}{numeric. SUBTLEX-US Zipf word frequency from the
+#'   \item{subtlex_us_zipf}{numeric. SUBTLEX-US Zipf word frequency from the
 #'     Brysbaert et al. (2019) word-prevalence release.}
-#'   \item{wf_zipf}{numeric. Zipf-scale word frequency from the \pkg{wordfreq}
+#'   \item{wordfreq_en_zipf}{numeric. Zipf-scale word frequency from the \pkg{wordfreq}
 #'     package (Speer, 2023), aggregated across Wikipedia, subtitles, news,
 #'     web, and social media sources. Scale ~1--7; NA for words not in the
 #'     wordfreq vocabulary. Cite as: Speer, R. (2023). wordfreq v3.1.1.

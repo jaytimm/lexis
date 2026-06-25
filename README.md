@@ -34,8 +34,6 @@ remotes::install_github("jaytimm/lexis")
 
 [![engelthaler_2018](https://img.shields.io/static/v1?label=&message=engelthaler_2018&color=eeeeee)](#humor) [![affective](https://img.shields.io/static/v1?label=&message=affective&color=ff9f43)](#) [![n=4997](https://img.shields.io/static/v1?label=n&message=4%2C997&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–5&color=dfe6e9)](#)
 
-[![roberts_2019](https://img.shields.io/static/v1?label=&message=roberts_2019&color=eeeeee)](#gender) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=701](https://img.shields.io/static/v1?label=n&message=701&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7+masc–fem&color=dfe6e9)](#)
-
 [![winter_2023](https://img.shields.io/static/v1?label=&message=winter_2023&color=eeeeee)](#iconicity) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=14776](https://img.shields.io/static/v1?label=n&message=14%2C776&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7&color=dfe6e9)](#)
 
 [![scott_2019](https://img.shields.io/static/v1?label=&message=scott_2019&color=eeeeee)](#glasgow-norms) [![multi](https://img.shields.io/static/v1?label=&message=multi-dimension&color=fd79a8)](#) [![n=5553](https://img.shields.io/static/v1?label=n&message=5%2C553&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7+%2F+1–9&color=dfe6e9)](#) [![dims=9](https://img.shields.io/static/v1?label=dimensions&message=9&color=dfe6e9)](#) [![UK](https://img.shields.io/static/v1?label=raters&message=UK&color=dfe6e9)](#)
@@ -139,17 +137,6 @@ Source: Engelthaler, T., & Hills, T. T. (2018). Humor norms for 4,997 English wo
 
 ---
 
-### Gender
-Dimension: `gender_femininity`
-
-Construct: perceived masculine versus feminine association of the word’s meaning in discourse.
-
-Scale: 1–7, masculine to feminine. SD available.
-
-Source: Roberts, B. E., & Utych, S. M. (2019). Linking gender and language: Developing a database of masculine and feminine words. *American Politics Research*, 47, 1155–1173.
-
----
-
 ### Iconicity
 Dimension: `iconicity`
 
@@ -190,8 +177,8 @@ These columns are **not rating norms** — they carry no rater-averaged judgment
 |---|---|---|
 | `lexdec_rt` | Mean lexical-decision time (ms): word vs. nonword judgment; reflects accessibility. | Balota et al. (2007), English Lexicon Project |
 | `lexdec_naming_rt` | Mean naming latency (ms): reading the word aloud; sensitive to phonology/articulation. | Balota et al. (2007) |
-| `freq_zipf_us` | SUBTLEX-US Zipf word frequency. | Brysbaert et al. (2019) |
-| `wf_zipf` | Zipf word frequency aggregated across Wikipedia, subtitles, news, web, and social media. | Speer (2023), `wordfreq` v3.1.1 |
+| `subtlex_us_zipf` | SUBTLEX-US Zipf word frequency (US film-subtitle corpus). | Brysbaert et al. (2019) |
+| `wordfreq_en_zipf` | Zipf word frequency, general-English blend (Wikipedia, subtitles, news, web, social media). | Speer (2023), `wordfreq` v3.1.1 |
 | `wn_n_synsets` | Number of WordNet synsets (a polysemy measure). | WordNet 3.1 (Miller, 1995) |
 | `wn_n_noun`, `wn_n_verb`, `wn_n_adj`, `wn_n_adv` | Synset counts by part of speech; non-zero counts give grammatical versatility. | WordNet 3.1 |
 
