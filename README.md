@@ -16,27 +16,17 @@ remotes::install_github("jaytimm/lexis")
 
 ## Datasets
 
-[![kuperman_2012](https://img.shields.io/static/v1?label=&message=kuperman_2012&color=eeeeee)](#age-of-acquisition) [![temporal](https://img.shields.io/static/v1?label=&message=temporal&color=e2d175)](#) [![n=30121](https://img.shields.io/static/v1?label=n&message=30%2C121&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–25+years&color=dfe6e9)](#)
-
-[![brysbaert_2014](https://img.shields.io/static/v1?label=&message=brysbaert_2014&color=eeeeee)](#concreteness) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=39954](https://img.shields.io/static/v1?label=n&message=39%2C954&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–5&color=dfe6e9)](#)
-
-[![warriner_2013](https://img.shields.io/static/v1?label=&message=warriner_2013&color=eeeeee)](#valence-arousal-dominance) [![affective](https://img.shields.io/static/v1?label=&message=affective&color=ff9f43)](#) [![n=13915](https://img.shields.io/static/v1?label=n&message=13%2C915&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–9+SAM&color=dfe6e9)](#)
-
-[![lynott_2020](https://img.shields.io/static/v1?label=&message=lynott_2020&color=eeeeee)](#lancaster-sensorimotor-norms) [![sensorimotor](https://img.shields.io/static/v1?label=&message=sensorimotor&color=00d2d3)](#) [![n=39707](https://img.shields.io/static/v1?label=n&message=39%2C707&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=0–5&color=dfe6e9)](#) [![dims=11](https://img.shields.io/static/v1?label=modalities&message=11&color=dfe6e9)](#)
-
-[![balota_2007](https://img.shields.io/static/v1?label=&message=balota_2007&color=eeeeee)](#english-lexicon-project) [![covariate](https://img.shields.io/static/v1?label=&message=covariate&color=95a5a6)](#) [![n=40481](https://img.shields.io/static/v1?label=n&message=40%2C481&color=dfe6e9)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=RT+ms&color=dfe6e9)](#)
-
-[![brysbaert_2019](https://img.shields.io/static/v1?label=&message=brysbaert_2019&color=eeeeee)](#word-frequency) [![covariate](https://img.shields.io/static/v1?label=&message=covariate&color=95a5a6)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=Zipf+freq&color=dfe6e9)](#)
-
-[![pexman_2019](https://img.shields.io/static/v1?label=&message=pexman_2019&color=eeeeee)](#body-object-interaction) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=9348](https://img.shields.io/static/v1?label=n&message=9%2C348&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7&color=dfe6e9)](#)
-
-[![diveica_2023](https://img.shields.io/static/v1?label=&message=diveica_2023&color=eeeeee)](#socialness) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=8388](https://img.shields.io/static/v1?label=n&message=8%2C388&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7&color=dfe6e9)](#)
-
-[![engelthaler_2018](https://img.shields.io/static/v1?label=&message=engelthaler_2018&color=eeeeee)](#humor) [![affective](https://img.shields.io/static/v1?label=&message=affective&color=ff9f43)](#) [![n=4997](https://img.shields.io/static/v1?label=n&message=4%2C997&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–5&color=dfe6e9)](#)
-
-[![winter_2023](https://img.shields.io/static/v1?label=&message=winter_2023&color=eeeeee)](#iconicity) [![semantic](https://img.shields.io/static/v1?label=&message=semantic&color=54a0ff)](#) [![n=14776](https://img.shields.io/static/v1?label=n&message=14%2C776&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7&color=dfe6e9)](#)
-
-[![scott_2019](https://img.shields.io/static/v1?label=&message=scott_2019&color=eeeeee)](#glasgow-norms) [![multi](https://img.shields.io/static/v1?label=&message=multi-dimension&color=fd79a8)](#) [![n=5553](https://img.shields.io/static/v1?label=n&message=5%2C553&color=dfe6e9)](#) [![sd](https://img.shields.io/static/v1?label=SD&message=available&color=2ecc71)](#) [![scale](https://img.shields.io/static/v1?label=scale&message=1–7+%2F+1–9&color=dfe6e9)](#) [![dims=9](https://img.shields.io/static/v1?label=dimensions&message=9&color=dfe6e9)](#) [![UK](https://img.shields.io/static/v1?label=raters&message=UK&color=dfe6e9)](#)
+- Age of acquisition (Kuperman et al., 2012)
+- Concreteness (Brysbaert et al., 2014)
+- Valence, arousal & dominance (Warriner et al., 2013)
+- Lancaster sensorimotor norms, 11 modalities (Lynott et al., 2020)
+- English Lexicon Project — lexical-decision & naming RTs (Balota et al., 2007)
+- Word frequency, SUBTLEX-US (Brysbaert et al., 2019)
+- Body–object interaction (Pexman et al., 2019)
+- Socialness (Diveica et al., 2023)
+- Humor (Engelthaler & Hills, 2018)
+- Iconicity (Winter et al., 2023)
+- Glasgow Norms, 9 dimensions (Scott et al., 2019)
 
 ---
 
