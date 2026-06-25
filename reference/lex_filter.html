@@ -82,7 +82,7 @@ dimension are excluded.</p></dd>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># high concreteness, high valence</span></span></span>
 <span class="r-in"><span><span class="fu">lex_filter</span><span class="op">(</span>concreteness <span class="op">=</span> <span class="fl">4</span>, valence <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 226 × 41</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 229 × 41</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    word   lemma    aoa   boi concreteness gender_femininity humor iconicity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> money  money   5.11  6.29         4.54              4.63  2.25      2.7 </span>
@@ -95,7 +95,7 @@ dimension are excluded.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> family family  3.38  5.29         4.23             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         3.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> kid    kid     4.28  5.68         4.56             <span style="color: #BB0000;">NA</span>     2.78      4.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> honey  honey   5.44  5.43         4.88             <span style="color: #BB0000;">NA</span>     2.53      2.5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 216 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 219 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 33 more variables: lancaster_auditory &lt;dbl&gt;, lancaster_gustatory &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lancaster_haptic &lt;dbl&gt;, lancaster_interoceptive &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lancaster_olfactory &lt;dbl&gt;, lancaster_visual &lt;dbl&gt;,</span></span>
@@ -129,7 +129,7 @@ dimension are excluded.</p></dd>
 <span class="r-in"><span><span class="co"># abstract (low concreteness) words with many definitions</span></span></span>
 <span class="r-in"><span><span class="fu">lex_filter</span><span class="op">(</span>concreteness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, n_defs <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Column 'n_defs' not found in lexis_wide — skipping.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8,018 × 41</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8,098 × 41</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    word    lemma     aoa   boi concreteness gender_femininity humor iconicity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> be      be       5.11  1.65         1.85             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         3   </span>
@@ -142,7 +142,7 @@ dimension are excluded.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> sure    sure     4.85 <span style="color: #BB0000;">NA</span>            1.73             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         3.2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> great   great    5.05 <span style="color: #BB0000;">NA</span>            1.81              4.2   2.49      3.2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> believe believe  5.78 <span style="color: #BB0000;">NA</span>            1.55             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>         3   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8,008 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8,088 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 33 more variables: lancaster_auditory &lt;dbl&gt;, lancaster_gustatory &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lancaster_haptic &lt;dbl&gt;, lancaster_interoceptive &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lancaster_olfactory &lt;dbl&gt;, lancaster_visual &lt;dbl&gt;,</span></span>

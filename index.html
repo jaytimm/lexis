@@ -65,7 +65,7 @@
 <div class="section level1">
 <div class="page-header"><h1 id="lexis">lexis<a class="anchor" aria-label="anchor" href="#lexis"></a>
 </h1></div>
-<p><code>lexis</code> is an R data package that collates English psycholinguistic rating norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into tidy long and wide tables. <code>lexis_long</code> holds rater-averaged rating norms only — each with per-item standard deviations and rater counts — while lexical covariates (lexical-decision and naming latencies, word frequencies, WordNet sense counts) and GloVe word embeddings sit alongside in <code>lexis_wide</code>. Per-study participant provenance is recorded in <code>lexis_datasets</code>, and citations and construct notes are kept beside the data.</p>
+<p><code>lexis</code> is an R data package that collates English psycholinguistic rating norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into long and wide tables. <code>lexis_long</code> holds rater-averaged rating norms only — each with per-item standard deviations and rater counts — while lexical covariates (lexical-decision and naming latencies, word frequencies, WordNet sense counts) sit alongside in <code>lexis_wide</code>. GloVe word embeddings are provided separately as <code>glove2014</code> and <code>glove2024</code>. Per-study participant details are recorded in <code>lexis_datasets</code>, and citations and construct notes are kept beside the data.</p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
@@ -388,7 +388,7 @@
 <tbody>
 <tr>
 <td><code>lexis_long</code></td>
-<td>Tidy long-format table of rater-averaged rating norms: one row per word–dimension observation. Columns: <code>word</code>, <code>lemma</code>, <code>dataset</code>, <code>dimension</code>, <code>mean</code>, <code>sd</code>, <code>n_ratings</code>, <code>scale_min</code>, <code>scale_max</code>.</td>
+<td>Long-format table of rater-averaged rating norms: one row per word–dimension observation. Columns: <code>word</code>, <code>lemma</code>, <code>dataset</code>, <code>dimension</code>, <code>mean</code>, <code>sd</code>, <code>n_ratings</code>, <code>scale_min</code>, <code>scale_max</code>.</td>
 </tr>
 <tr>
 <td><code>lexis_wide</code></td>
