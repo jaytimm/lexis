@@ -1,5 +1,22 @@
 # data-raw/build_all.R
-# Runs the full pipeline in order.
+# Full lexis package build pipeline.
+#
+# ── First-time setup (one-time only) ──────────────────────────────────────────
+# WordNet columns (wn_*) require a Python step that must run after the first
+# pass of build_lexis.R produces _build/lexis_wide.csv:
+#
+#   Rscript data-raw/build_lexis.R          # first pass (no wn_* yet)
+#   python data-raw/build_wordnet.py        # needs: pip install nltk
+#   Rscript data-raw/build_all.R            # full build with wn_* columns
+#
+# GloVe embeddings require large text files not in the repo:
+#   datasets/xother/glove-embeddings/2014/glove.6B.300d.txt
+#   datasets/xother/glove-embeddings/2024/wiki_giga_2024_300_...txt
+# If absent, build_glove.R is skipped and data/glove*.rda are not updated.
+#
+# ── Normal rebuild ─────────────────────────────────────────────────────────────
+# Once the above are in place, just run:
+#   Rscript data-raw/build_all.R
 
 find_base_dir <- function() {
   env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
@@ -33,61 +50,55 @@ base_dir <- find_base_dir()
 owd <- getwd()
 on.exit(setwd(owd), add = TRUE)
 setwd(base_dir)
-message("=== lexis build_all: ", base_dir, " ===\n")
 
-source(file.path(base_dir, "data-raw/build_wordset.R"))
-source(file.path(base_dir, "data-raw/build_lexis.R"))
-source(file.path(base_dir, "data-raw/build_glove.R"))
-
-message("\n=== Packaging LazyData objects ===")
-data_dir <- file.path(base_dir, "data")
 build_dir <- file.path(base_dir, "data-raw/_build")
+data_dir  <- file.path(base_dir, "data")
 dir.create(data_dir, showWarnings = FALSE)
 
-required_rds <- c(
-  lexis_long    = file.path(build_dir, "lexis_long.rds"),
-  lexis_wide    = file.path(build_dir, "lexis_wide.rds"),
-  lexis_meta    = file.path(build_dir, "lexis_meta.rds"),
-  wordset_dict  = file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_dict.rds"),
-  wordset_index = file.path(base_dir, "datasets/xother/wordset-dictionary/wordset_index.rds")
+message("=== lexis build_all: ", base_dir, " ===\n")
+
+# ── Step 1: Compile norming datasets ──────────────────────────────────────────
+message("--- build_lexis.R ---")
+source(file.path(base_dir, "data-raw/build_lexis.R"))
+
+# ── Step 2: GloVe embeddings ───────────────────────────────────────────────────
+message("\n--- build_glove.R ---")
+source(file.path(base_dir, "data-raw/build_glove.R"))
+
+# ── Step 3: Norming instructions ──────────────────────────────────────────────
+message("\n--- build_instructions.R ---")
+source(file.path(base_dir, "data-raw/build_instructions.R"))
+
+# ── Step 4: Package _build CSVs → data/*.rda ──────────────────────────────────
+message("\n--- Packaging .rda files ---")
+
+required_csvs <- c(
+  lexis_long     = file.path(build_dir, "lexis_long.csv"),
+  lexis_wide     = file.path(build_dir, "lexis_wide.csv"),
+  lexis_meta     = file.path(build_dir, "lexis_meta.csv"),
+  lexis_datasets = file.path(build_dir, "lexis_datasets.csv")
 )
-missing <- required_rds[!file.exists(required_rds)]
+missing <- required_csvs[!file.exists(required_csvs)]
 if (length(missing)) {
   stop(
-    "Missing prerequisite .rds files under:\n  ", base_dir, "\n\n",
-    "Absent:\n",
-    paste0("  - ", names(missing), " -> ", missing, collapse = "\n"),
+    "Missing _build CSVs:\n",
+    paste0("  ", missing, collapse = "\n"),
     call. = FALSE
   )
 }
 
-save_rda <- function(object_name, rds_path, compress = "xz") {
-  obj <- readRDS(rds_path)
+save_rda <- function(object_name, csv_path, compress = "xz") {
+  obj <- readr::read_csv(csv_path, col_types = readr::cols(), show_col_types = FALSE)
   assign(object_name, obj)
   out <- file.path(data_dir, paste0(object_name, ".rda"))
   save(list = object_name, file = out, compress = compress, envir = environment())
-  dim_txt <- if (is.matrix(obj)) {
-    paste0(nrow(obj), " x ", ncol(obj), " matrix")
-  } else {
-    paste0(nrow(obj), " rows x ", ncol(obj), " cols")
-  }
-  message("Saved ", object_name, ": ", dim_txt, " -> ", out)
+  message("Saved ", object_name, ": ", nrow(obj), " rows x ", ncol(obj), " cols")
   invisible(out)
 }
 
-save_rda("lexis_long",    required_rds[["lexis_long"]])
-save_rda("lexis_wide",    required_rds[["lexis_wide"]])
-save_rda("lexis_meta",    required_rds[["lexis_meta"]])
-save_rda("wordset_dict",  required_rds[["wordset_dict"]])
-
-glove_path <- file.path(data_dir, "glove2024.rda")
-if (file.exists(glove_path)) {
-  message("glove2024.rda present: ", round(file.size(glove_path) / 1e6, 1), " MB")
-} else {
-  warning(
-    "data/glove2024.rda not found; run data-raw/build_glove.R after data-raw/_build/lexis_wide.rds exists.",
-    call. = FALSE
-  )
-}
+save_rda("lexis_long",     required_csvs[["lexis_long"]])
+save_rda("lexis_wide",     required_csvs[["lexis_wide"]])
+save_rda("lexis_meta",     required_csvs[["lexis_meta"]])
+save_rda("lexis_datasets", required_csvs[["lexis_datasets"]])
 
 message("\n=== build_all finished ===")

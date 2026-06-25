@@ -13,4 +13,5 @@ data-raw/_build/
 docs/
 
 claude.md
+.claude/
 .venv-bge/

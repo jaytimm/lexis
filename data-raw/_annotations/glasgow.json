@@ -1,0 +1,157 @@
+{
+  "constructs": [
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_valence",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "very negative",
+          "9": "very positive"
+        }
+      },
+      "instructions_verbatim": "Rate how positive or negative the word makes you feel, from 1 (very negative) to 9 (very positive).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate the emotional valence of this word. Range: 1-9 (1 = very negative, 9 = very positive). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 9
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_arousal",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "very calm",
+          "9": "very aroused"
+        }
+      },
+      "instructions_verbatim": "Rate how calm or aroused (excited) the word makes you feel, from 1 (very calm) to 9 (very aroused).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate the emotional arousal of this word. Range: 1-9 (1 = very calm, 9 = very aroused). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 9
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_dominance",
+      "scale": {
+        "range": "1-9",
+        "anchors": {
+          "1": "very controlled",
+          "9": "very in control"
+        }
+      },
+      "instructions_verbatim": "Rate how dominant or in control (versus controlled or submissive) the word makes you feel, from 1 (very controlled) to 9 (very in control).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate the sense of control this word evokes. Range: 1-9 (1 = very controlled/submissive, 9 = very in control/dominant). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 9
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_concreteness",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very abstract",
+          "7": "very concrete"
+        }
+      },
+      "instructions_verbatim": "Rate how abstract or concrete the word's meaning is, from 1 (very abstract) to 7 (very concrete).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate how concrete this word's meaning is. Range: 1-7 (1 = very abstract, 7 = very concrete). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_imageability",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very hard to imagine",
+          "7": "very easy to imagine"
+        }
+      },
+      "instructions_verbatim": "Rate how easily the word evokes a mental image, from 1 (very hard to imagine) to 7 (very easy to imagine).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate how easily this word evokes a mental image. Range: 1-7 (1 = very hard to imagine, 7 = very easy to imagine). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_familiarity",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very unfamiliar",
+          "7": "very familiar"
+        }
+      },
+      "instructions_verbatim": "Rate how familiar the word is, from 1 (very unfamiliar) to 7 (very familiar).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate how familiar this word is. Range: 1-7 (1 = very unfamiliar, 7 = very familiar). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_aoa",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "learned earliest",
+          "7": "learned latest"
+        }
+      },
+      "instructions_verbatim": "Rate the age at which you learned the word, as a 1-7 band from 1 (learned earliest, in early childhood) to 7 (learned latest, in adulthood).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Estimate when this word is typically learned, as a 1-7 band from 1 (learned earliest, in early childhood) to 7 (learned latest, in adulthood). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_size",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very small",
+          "7": "very large"
+        }
+      },
+      "instructions_verbatim": "Rate the size of what the word refers to, from 1 (very small) to 7 (very large).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate the physical size of what this word refers to. Range: 1-7 (1 = very small, 7 = very large). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    },
+    {
+      "n_items": 5553,
+      "n_participants": 829,
+      "construct_name": "glasgow_gender",
+      "scale": {
+        "range": "1-7",
+        "anchors": {
+          "1": "very feminine",
+          "7": "very masculine"
+        }
+      },
+      "instructions_verbatim": "Rate the word's gender association, from 1 (very feminine) to 7 (very masculine).",
+      "citation": "Scott, G. G., Keitel, A., Becirspahic, M., Yao, B., & Sereno, S. C. (2019). The Glasgow Norms: Ratings of 5,500 words on nine scales. Behavior Research Methods, 51, 1258-1270.",
+      "instructions_llm": "Rate the gender association of this word. Range: 1-7 (1 = very feminine, 7 = very masculine). Reply with one number.",
+      "scale_min": 1,
+      "scale_max": 7
+    }
+  ]
+}

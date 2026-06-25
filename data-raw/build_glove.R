@@ -6,38 +6,40 @@
 library(dplyr)
 library(readr)
 
-find_base_dir <- function() {
-  env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
-  if (nzchar(env_dir)) return(normalizePath(env_dir, mustWork = TRUE))
+if (!exists("find_base_dir", mode = "function")) {
+  find_base_dir <- function() {
+    env_dir <- Sys.getenv("LEXIS_BASE_DIR", unset = "")
+    if (nzchar(env_dir)) return(normalizePath(env_dir, mustWork = TRUE))
 
-  this_file <- tryCatch(
-    normalizePath(sys.frame(1)$ofile, mustWork = FALSE),
-    error = function(e) ""
-  )
-  file_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
-  if (!nzchar(this_file) && length(file_arg)) {
-    this_file <- sub("^--file=", "", file_arg[[1]])
-  }
-  candidates <- unique(c(getwd(), dirname(this_file), dirname(dirname(this_file))))
-  candidates <- candidates[nzchar(candidates)]
-
-  for (start in candidates) {
-    current <- normalizePath(start, mustWork = FALSE)
-    repeat {
-      desc <- file.path(current, "DESCRIPTION")
-      if (file.exists(desc) && any(grepl("^Package:\\s+lexis\\s*$", readLines(desc, warn = FALSE)))) {
-        return(current)
-      }
-      parent <- dirname(current)
-      if (identical(parent, current)) break
-      current <- parent
+    this_file <- tryCatch(
+      normalizePath(sys.frame(1)$ofile, mustWork = FALSE),
+      error = function(e) ""
+    )
+    file_arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+    if (!nzchar(this_file) && length(file_arg)) {
+      this_file <- sub("^--file=", "", file_arg[[1]])
     }
-  }
+    candidates <- unique(c(getwd(), dirname(this_file), dirname(dirname(this_file))))
+    candidates <- candidates[nzchar(candidates)]
 
-  stop(
-    "Could not locate the lexis package root. Set LEXIS_BASE_DIR to the repo path.",
-    call. = FALSE
-  )
+    for (start in candidates) {
+      current <- normalizePath(start, mustWork = FALSE)
+      repeat {
+        desc <- file.path(current, "DESCRIPTION")
+        if (file.exists(desc) && any(grepl("^Package:\\s+lexis\\s*$", readLines(desc, warn = FALSE)))) {
+          return(current)
+        }
+        parent <- dirname(current)
+        if (identical(parent, current)) break
+        current <- parent
+      }
+    }
+
+    stop(
+      "Could not locate the lexis package root. Set LEXIS_BASE_DIR to the repo path.",
+      call. = FALSE
+    )
+  }
 }
 
 read_glove_txt <- function(glove_txt, ndim, norms_vocab) {
@@ -97,13 +99,13 @@ read_glove_txt <- function(glove_txt, ndim, norms_vocab) {
 base_dir  <- find_base_dir()
 embed_dir <- file.path(base_dir, "datasets/xother/glove-embeddings")
 build_dir <- file.path(base_dir, "data-raw/_build")
-lexis_rds <- file.path(build_dir, "lexis_wide.rds")
+lexis_csv <- file.path(build_dir, "lexis_wide.csv")
 
-if (!file.exists(lexis_rds)) {
-  stop("data-raw/_build/lexis_wide.rds not found — run data-raw/build_lexis.R first.", call. = FALSE)
+if (!file.exists(lexis_csv)) {
+  stop("data-raw/_build/lexis_wide.csv not found — run data-raw/build_lexis.R first.", call. = FALSE)
 }
 
-lexis_wide  <- readRDS(lexis_rds)
+lexis_wide <- readr::read_csv(lexis_csv, col_types = readr::cols(), show_col_types = FALSE)
 norms_vocab <- unique(tolower(lexis_wide$word))
 
 glove_sources <- list(
@@ -127,21 +129,9 @@ for (obj_name in names(glove_sources)) {
   mats[[obj_name]] <- read_glove_txt(src$path, src$ndim, norms_vocab)
 }
 
-common_words <- Reduce(intersect, lapply(mats, rownames))
-if (!length(common_words)) {
-  stop("No words overlap between GloVe 2014 and 2024 after lexis filtering.", call. = FALSE)
-}
-
-message(
-  "\n=== Restricting to 2014/2024 intersection (", length(common_words), " words) ==="
-)
 for (obj_name in names(mats)) {
-  before <- nrow(mats[[obj_name]])
-  assign(obj_name, mats[[obj_name]][common_words, , drop = FALSE])
+  assign(obj_name, mats[[obj_name]])
   out <- file.path(base_dir, "data", paste0(obj_name, ".rda"))
   save(list = obj_name, file = out, compress = "xz")
-  message(
-    "Saved ", obj_name, " (", nrow(get(obj_name)), " words x ", ncol(get(obj_name)),
-    " dims; dropped ", before - length(common_words), ")"
-  )
+  message("Saved ", obj_name, ": ", nrow(mats[[obj_name]]), " words x ", ncol(mats[[obj_name]]), " dims")
 }
