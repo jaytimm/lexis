@@ -1,6 +1,6 @@
 # lexis
 
-`lexis` is an R data package that collates English psycholinguistic rating norms from multiple published sources into a common word-level resource, cleaning source files, standardizing word identifiers, harmonizing dimension names and scale metadata, and aggregating source-specific measures into long and wide tables. `lexis_long` holds rater-averaged rating norms only — each with per-item standard deviations and rater counts — while lexical covariates (lexical-decision and naming latencies, word frequencies, WordNet sense counts) sit alongside in `lexis_wide`. GloVe word embeddings are provided separately as `glove2014` and `glove2024`. Per-study participant details are recorded in `lexis_datasets`, and citations and construct notes are kept beside the data.
+`lexis` is an R data package that brings together English psycholinguistic norms from published sources into a harmonized word-level resource. It includes rater-averaged ratings with uncertainty and sample-size information, lexical covariates such as reaction times, word frequencies, and WordNet sense counts, plus study metadata, construct notes, citations, and GloVe word embeddings.
 
 ## Install
 
