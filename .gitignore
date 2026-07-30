@@ -4,8 +4,6 @@
 *.csv
 /data-raw/raw/
 datasets/xother/glove-embeddings/
-data/glove2014.rda
-data/glove2024.rda
 datasets/xother/wordset-dictionary/jsons/
 
 app/
